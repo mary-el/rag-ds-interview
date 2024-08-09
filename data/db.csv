@@ -1,0 +1,663 @@
+section,question,answer
+Classic_models,"What are various ways to predict a binary response variable? Can you compare two of them and tell me when one would be more appropriate? What’s the difference between these? (SVM, Logistic Regression, Naive Bayes, Decision Tree, etc.)","Things to look at: N, P, linearly seperable?, features independent?, likely to overfit?, speed, performance, memory usage
+Logistic Regression
+features roughly linear, problem roughly linearly separable
+robust to noise, use l1, l2 regularization for model selection, avoid overfitting
+the output come as probabilities
+efficient and the computation can be distributed
+can be used as a baseline for other algorithms
+(-) can hardly handle categorical features
+SVM
+with a nonlinear kernel, can deal with problems that are not linearly separable
+(-) slow to train, for most industry scale applications, not really efficient
+Naive Bayes
+computationally efficient when P is large by alleviating the curse of dimensionality
+works surprisingly well for some cases even if the condition doesn’t hold
+with word frequencies as features, the independence assumption can be seen reasonable. So the algorithm can be used in text categorization
+(-) conditional independence of every other feature should be met
+Tree Ensembles
+good for large N and large P, can deal with categorical features very well
+non parametric, so no need to worry about outliers
+GBT’s work better but the parameters are harder to tune
+RF works out of the box, but usually performs worse than GBT
+Deep Learning
+works well for some classification tasks (e.g. image)
+used to squeeze something out of the problem
+"
+Classic_models,What methods for solving linear regression do you know?,"To solve linear regression, you need to find the coefficients which minimize the sum of squared errors.
+Matrix Algebra method: Let's say you have X, a matrix of features, and y, a vector with the values you want to predict. After going through the matrix algebra and minimization problem, you get this solution:
+But solving this requires you to find an inverse, which can be time-consuming, if not impossible. Luckily, there are methods like Singular Value Decomposition (SVD) or QR Decomposition that can reliably calculate this part  (called the pseudo-inverse) without actually needing to find an inverse. The popular python ML library sklearn uses SVD to solve least squares.
+Alternative method: Gradient Descent. 
+"
+Classic_models,What clustering algorithms do you know? ,"k-medoids: Takes the most central point instead of the mean value as the center of the cluster. This makes it more robust to noise.
+Agglomerative Hierarchical Clustering (AHC): hierarchical clusters combining the nearest clusters starting with each point as its own cluster.
+DIvisive ANAlysis Clustering (DIANA): hierarchical clustering starting with one cluster containing all points and splitting the clusters until each point describes its own cluster.
+Density-Based Spatial Clustering of Applications with Noise (DBSCAN): Cluster defined as maximum set of density-connected points.
+"
+Classic_models,How does DBScan work?,"Two input parameters epsilon (neighborhood radius) and minPts (minimum number of points in an epsilon-neighborhood)
+Cluster defined as maximum set of density-connected points.
+Points p_j and p_i are density-connected w.r.t. epsilon and minPts if there is a point o such that both, i and j are density-reachable from o w.r.t. epsilon and minPts.
+p_j is density-reachable from p_i w.r.t. epsilon, minPts if there is a chain of points p_i -> p_i+1 -> p_i+x = p_j such that p_i+x is directly density-reachable from p_i+x-1.
+p_j is a directly density-reachable point of the neighborhood of p_i if dist(p_i,p_j) <= epsilon.
+"
+Classic_models,When would you choose K-means and when DBScan? ,"DBScan is more robust to noise.
+DBScan is better when the amount of clusters is difficult to guess.
+K-means has a lower complexity, i.e. it will be much faster, especially with a larger amount of points.
+"
+Classic_models,What reduction techniques do you know? ,"Singular Value Decomposition (SVD)
+Principal Component Analysis (PCA)
+Linear Discriminant Analysis (LDA)
+T-distributed Stochastic Neighbor Embedding (t-SNE)
+Autoencoders
+Fourier and Wavelet Transforms
+"
+Classic_models,What’s singular value decomposition? How is it typically used for machine learning? ,"Singular Value Decomposition (SVD) is a general matrix decomposition method that factors a matrix X into three matrices L (left singular values), Σ (diagonal matrix) and R^T (right singular values).
+For machine learning, Principal Component Analysis (PCA) is typically used. It is a special type of SVD where the singular values correspond to the eigenvectors and the values of the diagonal matrix are the squares of the eigenvalues. We use these features as they are statistically descriptive.
+Having calculated the eigenvectors and eigenvalues, we can use the Kaiser-Guttman criterion, a scree plot or the proportion of explained variance to determine the principal components (i.e. the final dimensionality) that are useful for dimensionality reduction
+"
+Classic_models,Which models do you know for solving time series problems? ,"Simple Exponential Smoothing: approximate the time series with an exponential function
+Trend-Corrected Exponential Smoothing (Holt‘s Method): exponential smoothing that also models the trend
+Trend- and Seasonality-Corrected Exponential Smoothing (Holt-Winter‘s Method): exponential smoothing that also models trend and seasonality
+Time Series Decomposition: decomposed a time series into the four components trend, seasonal variation, cycling variation and irregular component
+Autoregressive models: similar to multiple linear regression, except that the dependent variable y_t depends on its own previous values rather than other independent variables.
+Deep learning approaches (RNN, LSTM, etc.)
+"
+Classic_models,What are the problems with using trees for solving time series problems? ,"Random Forest models are not able to extrapolate time series data and understand increasing/decreasing trends. It will provide us with average data points if the validation data has values greater than the training data points.
+"
+Classic_models,Why might it be preferable to include fewer predictors over many?,"When we add irrelevant features, it increases model's tendency to overfit because those features introduce more noise. When two variables are correlated, they might be harder to interpret in case of regression, etc.
+curse of dimensionality
+adding random noise makes the model more complicated but useless
+computational cost
+"
+Classic_models,What are some ways I can make my model more robust to outliers?,"We can have regularization such as L1 or L2 to reduce variance (increase bias).
+Changes to the algorithm:
+Use tree-based methods instead of regression methods as they are more resistant to outliers. For statistical tests, use non parametric tests instead of parametric ones.
+Use robust error metrics such as MAE or Huber Loss instead of MSE.
+Changes to the data:
+Winsorizing the data
+Transforming the data (e.g. log)
+Remove them only if you’re certain they’re anomalies not worth predicting
+"
+Classic_models,Your linear regression didn’t run and communicates that there are an infinite number of best estimates for the regression coefficients. What could be wrong?,"p > n.
+If some of the explanatory variables are perfectly correlated (positively or negatively) then the coefficients would not be unique. 
+"
+Classic_models," You have several variables that are positively correlated with your response, and you think combining all of the variables could give you a good prediction of your response. However, you see that in the multiple linear regression, one of the weights on the predictors is negative. What could be the issue?","Multicollinearity refers to a situation in which two or more explanatory variables in a multiple regression model are highly linearly related. 
+Leave the model as is, despite multicollinearity. The presence of multicollinearity doesn't affect the efficiency of extrapolating the fitted model to new data provided that the predictor variables follow the same pattern of multicollinearity in the new data as in the data on which the regression model is based.
+principal component regression
+"
+Classic_models,What is the effect on the coefficients of logistic regression if two predictors are highly correlated? ,"When predictor variables are correlated, the estimated regression coefficient of any one variable depends on which other predictor variables are included in the model. When predictor variables are correlated, the precision of the estimated regression coefficients decreases as more predictor variables are added to the model.
+In statistics, multicollinearity (also collinearity) is a phenomenon in which two or more predictor variables in a multiple regression model are highly correlated, meaning that one can be linearly predicted from the others with a substantial degree of accuracy. In this situation the coefficient estimates of the multiple regression may change erratically in response to small changes in the model or the data. Multicollinearity does not reduce the predictive power or reliability of the model as a whole, at least within the sample data set; it only affects calculations regarding individual predictors. That is, a multiple regression model with correlated predictors can indicate how well the entire bundle of predictors predicts the outcome variable, but it may not give valid results about any individual predictor, or about which predictors are redundant with respect to others.
+The consequences of multicollinearity:
+Ratings estimates remain unbiased.
+Standard coefficient errors increase.
+The calculated t-statistics are underestimated.
+Multicollinearity reduces the precision of the estimated coefficients, which weakens the statistical power of your regression model. You might not be able to trust the p-values to identify independent variables that are statistically significant.
+Estimates become very sensitive to changes in specifications and changes in individual observations.
+The overall quality of the equation, as well as estimates of variables not related to multicollinearity, remain unaffected.
+The closer multicollinearity to perfect (strict), the more serious its consequences.
+Indicators of multicollinearity:
+High R2 and negligible odds.
+Strong pair correlation of predictors.
+Strong partial correlations of predictors.
+High VIF - variance inflation factor.
+"
+Classic_models,What’s the difference between Gaussian Mixture Model and K-Means?,"Let's says we are aiming to break them into three clusters. K-means will start with the assumption that a given data point belongs to one cluster.
+Choose a data point. At a given point in the algorithm, we are certain that a point belongs to a red cluster. In the next iteration, we might revise that belief, and be certain that it belongs to the green cluster. However, remember, in each iteration, we are absolutely certain as to which cluster the point belongs to. This is the ""hard assignment"".
+What if we are uncertain? What if we think, well, I can't be sure, but there is 70% chance it belongs to the red cluster, but also 10% chance its in green, 20% chance it might be blue. That's a soft assignment. The Mixture of Gaussian model helps us to express this uncertainty. It starts with some prior belief about how certain we are about each point's cluster assignments. As it goes on, it revises those beliefs. But it incorporates the degree of uncertainty we have about our assignment.
+Kmeans: find kk to minimize (x−μk)^2
+Gaussian Mixture (EM clustering) : find kk to minimize (x−μk)^2/σ^2
+The difference (mathematically) is the denominator “σ^2”, which means GM takes variance into consideration when it calculates the measurement. Kmeans only calculates conventional Euclidean distance. In other words, Kmeans calculate distance, while GM calculates “weighted” distance.
+K means:
+Hard assign a data point to one particular cluster on convergence.
+It makes use of the L2 norm when optimizing (Min {Theta} L2 norm point and its centroid coordinates).
+EM:
+Soft assigns a point to clusters (so it give a probability of any point belonging to any centroid).
+It doesn't depend on the L2 norm, but is based on the Expectation, i.e., the probability of the point belonging to a particular cluster. This makes K-means biased towards spherical clusters.
+"
+Classic_models,Bootstrapping,"The bootstrap method goes as follows. Let there be a sample X of size N. We can make a new sample from the original sample by drawing N elements from the latter randomly and uniformly, with replacement. In other words, we select a random element from the original sample of size 
+ and do this N times. All elements are equally likely to be selected, thus each element is drawn with the equal probability 1/N.
+By repeating this procedure M times, we create M bootstrap samples X1,…XM. In the end, we have a sufficient number of samples and can compute various statistics of the original distribution.
+"
+Classic_models,Bagging,"Suppose that we have a training set X. Using bootstrapping, we generate samples X1,…,XM. Now, for each bootstrap sample, we train its own classifier ai(x). The final classifier will average the outputs from all these individual classifiers. In the case of classification, this technique corresponds to voting: 
+Bagging reduces the variance of a classifier by decreasing the difference in error when we train the model on different datasets. In other words, bagging prevents overfitting. The efficiency of bagging comes from the fact that the individual models are quite different due to the different training data and their errors cancel each other out during voting. Additionally, outliers are likely omitted in some of the training bootstrap samples.
+Bagging is effective on small datasets. Dropping even a small part of training data leads to constructing substantially different base classifiers. If you have a large dataset, you would generate bootstrap samples of a much smaller size.
+"
+Classic_models,Out-of-bag error,"Looking ahead, in case of Random Forest, there is no need to use cross-validation or hold-out samples in order to get an unbiased error estimation. Why? Because, in ensemble techniques, the error estimation takes place internally.
+Random trees are constructed using different bootstrap samples of the original dataset. Approximately 37% of inputs are left out of a particular bootstrap sample and are not used in the construction of the k-th tree.
+This is easy to prove. Suppose there are ℓ examples in our dataset. At each step, each data point has equal probability of ending up in a bootstrap sample with replacement, probability 1/ℓ. The probability that there is no such bootstrap sample that contains a particular dataset element (i.e. it has been omitted ℓ times) equals (1−1/ℓ)^ℓ. When ℓ→+∞, it becomes equal to the Second Remarkable Limit 1e. Then, the probability of selecting a specific example is ≈1−1e≈63%.
+The Out-of-Bag error is then computed in the following way:
+take all instances that have been chosen as a part of test set for some tree (in the picture above that would be all instances in the lower-right picture). All together, they form an Out-of-Bag dataset;
+take a specific instance from the Out-of-Bag dataset and all models (trees) that were not trained with this instance;
+compare the majority vote of these trees’ classifications and compare it with the true label for this instance;
+do this for all instances in the Out-of-Bag dataset and get the average OOB error.
+"
+Classic_models,Difference between AdaBoost and XGBoost.,"Both methods combine weak learners into one strong learner. For example, one decision tree is a weak learner, and an emsemble of them would be a random forest model, which is a strong learner.
+Both methods in the learning process will increase the ensemble of weak-trainers, adding new weak learners to the ensemble at each training iteration, i.e. in the case of the forest, the forest will grow with new trees. The only difference between AdaBoost and XGBoost is how the ensemble is replenished.
+AdaBoost works by weighting the observations, putting more weight on difficult to classify instances and less on those already handled well. New weak learners are added sequentially that focus their training on the more difficult patterns. AdaBoost at each iteration changes the sample weights in the sample. It raises the weight of the samples in which more mistakes were made. The sample weights vary in proportion to the ensemble error. We thereby change the probabilistic distribution of samples - those that have more weight will be selected more often in the future. It is as if we had accumulated samples on which more mistakes were made and would use them instead of the original sample. In addition, in AdaBoost, each weak learner has its own weight in the ensemble (alpha weight) - this weight is higher, the “smarter” this weak learner is, i.e. than the learner least likely to make mistakes.
+XGBoost does not change the selection or the distribution of observations at all. XGBoost builds the first tree (weak learner), which will fit the observations with some prediction error. A second tree (weak learner) is then added to correct the errors made by the existing model. Errors are minimized using a gradient descent algorithm. Regularization can also be used to penalize more complex models through both Lasso and Ridge regularization.
+In short, AdaBoost- reweighting examples. Gradient boosting - predicting the loss function of trees. Xgboost - the regularization term was added to the loss function (depth + values in leaves).
+"
+Classic_models,Kernel function,"Kernel functions are generalized dot product functions used for the computing dot product of vectors x and y in high dimensional feature space. Kernal trick method is used for solving a non-linear problem by using a linear classifier by transforming linearly inseparable data into separable ones in higher dimensions.
+If the data is not linearly separable in the original, or input, space then we apply transformations to the data, which map the data from the original space into a higher dimensional feature space. The goal is that after the transformation to the higher dimensional space, the classes are now linearly separable in this higher dimensional feature space. We can then fit a decision boundary to separate the classes and make predictions. The decision boundary will be a hyperplane in this higher dimensional space.
+"
+Classic_models,How are the time series problems different from other regression problems?,"Time series data can be thought of as an extension to linear regression which uses terms like autocorrelation, movement of averages for summarizing historical data of y-axis variables for predicting a better future.
+Forecasting and prediction is the main goal of time series problems where accurate predictions can be made but sometimes the underlying reasons might not be known.
+Having Time in the problem does not necessarily mean it becomes a time series problem. There should be a relationship between target and time for a problem to become a time series problem.
+The observations close to one another in time are expected to be similar to the ones far away which provide accountability for seasonality. For instance, today’s weather would be similar to tomorrow’s weather but not similar to weather from 4 months from today. Hence, weather prediction based on past data becomes a time series problem.
+Instead of adding fully connected layers on top of the feature maps, it takes the average of each feature map, and the resulting vector is fed directly into the softmax layer. One advantage of global average pooling over the fully connected layers is that it is more native to the convolution structure by enforcing correspondences between feature maps and categories.
+Another advantage is that there is no parameter to optimize in the global average pooling thus overfitting is avoided at this layer. Global average pooling sums out the spatial information, thus it is more robust to spatial translations of the input. We can see global average pooling as a structural regularizer that explicitly enforces feature maps to be confidence maps of concepts (categories).
+Flatten Layer vs GlobalAveragePooling
+Flatten Layer will take a tensor of any shape and transform it into a one-dimensional tensor but keeping all values in the tensor. For example a tensor (samples, 10, 10, 32) will be flattened to (samples, 10 * 10 * 32).
+An architecture like this has the risk of overfitting to the training dataset. In practice, dropout layers are used to avoid overfitting.
+Global Average Pooling does something different. It applies average pooling on the spatial dimensions until each spatial dimension is one, and leaves other dimensions unchanged. For example, a tensor (samples, 10, 10, 32) would be output as (samples, 1, 1, 32).
+"
+Classic_models,What are various assumptions used in linear regression? What would happen if they are violated?,"Linear regression is done under the following assumptions:
+The sample data used for modeling represents the entire population.
+There exists a linear relationship between the X-axis variable and the mean of the Y variable.
+The residual variance is the same for any X values. This is called homoscedasticity. Residual Variance (also called unexplained variance or error variance) is the variance of any error (residual).
+The errors or residuals of the data are normally distributed and independent from each other. 
+There is minimal multicollinearity between explanatory variables 
+Extreme violations of the above assumptions lead to redundant results. Smaller violations of these result in greater variance or bias of the estimates.
+"
+Classic_models,What Is a Linear Regression Model? List Its Drawbacks.,"A linear regression model is a model in which there is a linear relationship between the dependent and independent variables. 
+Here are the drawbacks of linear regression: 
+Only the mean of the dependent variable is taken into consideration. 
+It assumes that the data is independent. 
+The method is sensitive to outlier data values. 
+"
+Classic_models,Decision Forest,"The algorithm for constructing a random forest of N trees goes as follows:
+For each k=1,…,N:
+Generate a bootstrap sample Xk.
+Build a decision tree bk on the sample Xk:
+Pick the best feature according to the given criteria. Split the sample by this feature to create a new tree level. Repeat this procedure until the sample is exhausted.
+Building the tree until any of its leaves contains no more than nmin instances or until a certain depth is reached.
+For each split, we first randomly pick m features from the d original ones and then search for the next best split only among the subset.
+The final classifier is defined by:
+a(x)=1N∑k=1Nbk(x)
+We use the majority voting for classification and the mean for regression.
+For classification problems, it is advisable to set m=d. For regression problems, we usually take m=d3, where d is the number of features. It is recommended to build each tree until all of its leaves contain only nmin=1 examples for classification and nmin=5 examples for regression.
+You can see random forest as bagging of decision trees with the modification of selecting a random subset of features at each split.
+The main difference between random forests and bagging is that, in a random forest, the best feature for a split is selected from a random subset of the available features while, in bagging, all features are considered for the next best split.
+Decision boundary of the decision tree is quite jagged and has a lot of acute angles that suggest overfitting and a weak ability to generalize. We would have trouble making reliable predictions on new test data. In contrast, the bagging algorithm has a rather smooth boundary and has no obvious signs of overfitting.
+"
+Classic_models,Parameters of Random Forest,"n_estimators — the number of trees in the forest (default = 10)
+criterion — the function used to measure the quality of a split. Supported criteria are “mse” for the mean squared error, which is equal to variance reduction as feature selection criterion, and “mae” for the mean absolute error (default = “mse”)
+max_features — the number of features to consider when looking for the best split. You can specify the number or percentage of features, or choose from the available values: “auto” (all features), “sqrt”, “log2”. (default = “auto”)
+max_depth — the maximum depth of the tree (default means that nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples)
+min_samples_split — the minimum number of samples required to split an internal node. Can be specified as the number or as a percentage of a total number of samples (default = 2)
+min_samples_leaf — the minimum number of samples required at a leaf node(default = 1)
+min_weight_fraction_leaf — the minimum weighted fraction of the sum total of weights (of all the input samples) required to be at a leaf node. Samples have equal weight when sample_weight is not provided (default = 0)
+max_leaf_nodes — the maximum number of leaves (default = no restrictions)
+min_impurity_split — threshold for early stopping in tree growth. A node will split if its impurity is above the threshold, otherwise it is a leaf (default = 1е-7)
+bootstrap — whether bootstrap samples are used when building trees(default = True)
+oob_score — whether to use out-of-bag samples to estimate the R^2 on unseen data (default = False)
+n_jobs — the number of jobs to run in parallel for both fit and predict. If -1, then the number of jobs is set to the number of cores (default = 1)
+random_state — if int, random_state is the seed used by the random number generator; if RandomState instance, random_state is the random number generator; if None, the random number generator is the RandomState instance used by np.random (default = None)
+verbose — controls the verbosity of the tree building process (default = 0)
+warm_start — when set to True, reuse the solution of the previous call to fit and add more estimators to the ensemble, otherwise, just fit a whole new forest (default = False)
+In case of classification, parameters are mostly the same. Only the following differ for RandomForestClassifier as compared to RandomForestRegressor:
+criterion — the function used to measure the quality of a split. Supported criteria are “gini” for the Gini impurity and “entropy” for the information gain. Note: this parameter is tree-specific (default = “gini”)
+class_weight — the weight of each class (by default all weights equal to 1, but you can create a dictionary with weights or specify it as “balanced” - uses the values of classes to automatically adjust weights inversely proportional to class frequencies in the input data or as “balanced_subsample” - the same as “balanced” except that weights are computed based on the bootstrap sample for every tree grown)
+Below are the parameters which we need to pay attention to when we are building a new model:
+n_estimators — the number of trees in the forest;
+criterion — the function used to measure the quality of a split;
+max_features — the number of features to consider when looking for the best split;
+min_samples_leaf — the minimum number of samples required to be at a leaf node;
+max_depth — the maximum depth of the tree.
+"
+Classic_models,Variance and Decorrelation of Random Forests,"Let’s write the variance of a random forest as
+Var f(x)=ρ(x)σ2(x)
+ρ(x)=Corr[T(x1,Θ1(Z)),T(x2,Θ2(Z))],
+where
+ρ(x) is the sample correlation coefficient between any two trees used in averaging:
+Θ1(Z) and Θ2(Z) are a randomly selected pair of trees on randomly selected elements of the sample Z;
+T(x,Θi(Z)) is the output of the i-th tree classifier on an input vector x;
+σ2(x) is the sample variance of any randomly selected tree:
+σ2(x)=Var[T(x,Θ(X))]
+It is easy to confuse ρ(x) with the average correlation between the trained trees in a given random forest when we consider trees as N-vectors and calculate the average pairwise correlation between them. But this is not the case.
+In fact, this conditional correlation is not directly related to the averaging process, and the dependence of ρ(x) on x warns us of this difference. ρ(x) is the theoretical correlation between a pair of random trees estimated on the input x. Its value comes from the repeated sampling of the training set from the population Z and the subsequent random choice of a pair of trees. In statistics jargon, this is the correlation caused by the sampling distribution of Z and Θ.
+The conditional covariance of any pair of trees is equal to 0 because bootstrapping and feature selection are independent and identically distributed.
+If we consider the variance of a single tree, it barely depends on the parameters of the splitting (m). But they are crucial for ensembles. The variance of a tree is much higher than the one of an ensemble. The book The Elements of Statistical Learning (Trevor Hastie, Robert Tibshirani and Jerome Friedman) has a great example that demonstrates this fact:
+Just as in bagging, the bias of a random forest is the same as the bias of a single tree T(x,Θ(Z)):
+In absolute value, the bias is usually higher than that of an unpruned tree because randomization and sample space reduction impose their own restrictions on the model. Therefore, the improvements in prediction accuracy obtained by bagging and random forests are solely the result of variance reduction.
+"
+Classic_models,Pros and cons of random forests,"Pros:
+High prediction accuracy; will perform better than linear algorithms in most problems; the accuracy is comparable with that of boosting.
+Robust to outliers, thanks to random sampling.
+Insensitive to the scaling of features as well as any other monotonic transformations due to the random subspace selection.
+Doesn’t require fine-grained parameter tuning, works quite well out-of-the-box. With tuning, it is possible to achieve a 0.5–3% gain in accuracy, depending on the problem setting and data.
+Efficient for datasets with a large number of features and classes.
+Handles both continuous and discrete variables equally well.
+Rarely overfits. In practice, an increase in the tree number almost always improves the composition. But, after reaching a certain number of trees, the learning curve is very close to the asymptote.
+There are developed methods to estimate feature importance.
+Works well with missing data and maintains good accuracy even when a large part of data is missing.
+Provides means to weight classes on the whole dataset as well as for each tree sample.
+Under the hood, calculates proximities between pairs of examples that can subsequently be used in clustering, outlier detection, or interesting data representations.
+The above functionality and properties may be extended to unlabeled data to enable unsupervised clustering, data visualization, and outlier detection.
+Easily parallelized and highly scalable.
+Cons:
+In comparison with a single decision tree, Random Forest’s output is more difficult to interpret.
+There are no formal p-values for feature significance estimation.
+Performs worse than linear methods in the case of sparse data: text inputs, bag of words, etc.
+Unlike linear regression, Random Forest is unable to extrapolate. But, this can be also regarded as an advantage because outliers do not cause extreme values in Random Forests.
+Prone to overfitting in some problems, especially, when dealing with noisy data.
+In the case of categorical variables with varying level numbers, random forests favor variables with a greater number of levels. The tree will fit more towards a feature with many levels because this gains greater accuracy.
+If a dataset contains groups of correlated features, preference might be given to groups of smaller size (“correlation bias”). See this work
+The resulting model is large and requires a lot of RAM.
+"
+Classic_models,How can you select k for k-means? ,"We use the elbow method to select k for k-means clustering. The idea of the elbow method is to run k-means clustering on the data set where 'k' is the number of clusters.
+Within the sum of squares (WSS), it is defined as the sum of the squared distance between each member of the cluster and its centroid. 
+Siloutte score.
+For each point compute the score. 
+Score = (b - a)/ max(a,b)
+a = intra cluster distance 
+b = inter cluster distance for nearest cluster for that point. 
+Do this for all points and average. 
+Pick the one with max. average siloutte score
+"
+Classic_models,Describe Markov chains?,"Markov Chains defines that a state’s future probability depends only on its current state. 
+Markov chains belong to the Stochastic process type category.
+A perfect example of the Markov Chains is the system of word recommendation. In this system, the model recognizes and recommends the next word based on the immediately previous word and not anything before that. The Markov Chains take the previous paragraphs that were similar to training data-sets and generates the recommendations for the current paragraphs accordingly based on the previous word.
+"
+Classic_models,Difference between an error and a residual error,"The error of an observation is the deviation of the observed value from the true value of a quantity of interest (for example, a population mean). The residual is the difference between the observed value and the estimated value of the quantity of interest (for example, a sample mean).
+"
+Classic_models,What are the differences between Supervised and Unsupervised Learning?,"Supervised learning is a type of machine learning where a function is inferred from labeled training data. The training data contains a set of training examples.
+Unsupervised learning, on the other hand, is when inferences are drawn from datasets containing input data without labeled responses.
+The following are the various other differences between the two types of machine learning:
+"
+Classic_models,What is the Computational Graph?,"A computational graph is a graphical presentation that is based on TensorFlow. It has a wide network of different kinds of nodes wherein each node represents a particular mathematical operation. The edges in these nodes are called tensors. This is the reason the computational graph is called a TensorFlow of inputs. The computational graph is characterized by data flows in the form of a graph; therefore, it is also called the DataFlow Graph.
+Forward pass is the procedure for evaluating the value of the mathematical expression represented by computational graphs. Doing forward pass means we are passing the value from variables in forward direction from the left (input) to the right where the output is.
+In the backward pass, our intention is to compute the gradients for each input with respect to the final output. These gradients are essential for training the neural network using gradient descent.
+"
+Classic_models,What is the difference between a discriminative and a generative model?,"A discriminative model learns distinctions between different categories of data. A generative model learns categories of data. Discriminative models generally perform better on classification tasks.
+In General, A Discriminative model ‌models the decision boundary between the classes. A Generative Model ‌explicitly models the actual distribution of each class. In final both of them is0 predicting the conditional probability P(Animal | Features). But Both models learn different probabilities.
+A Generative Model ‌learns the joint probability distribution p(x,y). It predicts the conditional probability with the help of Bayes Theorem. A Discriminative model ‌learns the conditional probability distribution p(y|x). Both of these models were generally used in supervised learning problems.
+Generative classifiers
+Assume some functional form for P(Y), P(X|Y)
+Estimate parameters of P(X|Y), P(Y) directly from training data
+Use Bayes rule to calculate P(Y |X)
+Discriminative Classifiers
+Assume some functional form for P(Y|X)
+Estimate parameters of P(Y|X) directly from training data
+Generative classifiers
+‌Naïve Bayes
+Bayesian networks
+Markov random fields
+‌Hidden Markov Models (HMM)
+Discriminative Classifiers
+‌Logistic regression
+Scalar Vector Machine
+‌Traditional neural networks
+‌Nearest neighbour
+Conditional Random Fields (CRF)s
+"
+Classic_models,What are parametric models? Provide an example.,"Parametric models have a finite number of parameters. You only need to know the parameters of the model to make a data prediction. Common examples are as follows: 
+Logistic Regression
+Linear Discriminant Analysis
+Perceptron
+Naive Bayes
+Simple Neural Networks
+A learning model that summarizes data with a set of parameters of fixed size (independent of the number of training examples) is called a parametric model. No matter how much data you throw at a parametric model, it won’t change its mind about how many parameters it needs.
+Non-parametric models have an unbounded number of parameters to offer flexibility. For data predictions, you need the parameters of the model and the state of the observed data. Common examples are as follows: 
+k-Nearest Neighbors
+Decision Trees like CART and C4.5
+Support Vector Machines
+Nonparametric methods are good when you have a lot of data and no prior knowledge, and when you don’t want to worry too much about choosing just the right features.
+An easy to understand nonparametric model is the k-nearest neighbors algorithm that makes predictions based on the k most similar training patterns for a new data instance. The method does not assume anything about the form of the mapping function other than patterns that are close are likely to have a similar output variable.
+"
+Classic_models,Linear Discriminant Analysis,"Linear discriminant analysis is used as a tool for classification, dimension reduction, and data visualization. It has been around for quite some time now. Despite its simplicity, LDA often produces robust, decent, and interpretable classification results. When tackling real-world classification problems, LDA is often the benchmarking method before other more complicated and flexible ones are employed.
+"
+Classic_models,Hidden Markov Model vs Recurrent Neural Network,"Hidden Markov Models (HMMs) are much simpler than Recurrent Neural Networks (RNNs), and rely on strong assumptions which may not always be true. If the assumptions are true then you may see better performance from an HMM since it is less finicky to get working.
+An RNN may perform better if you have a very large dataset, since the extra complexity can take better advantage of the information in your data. This can be true even if the HMMs assumptions are true in your case.
+Finally, don't be restricted to only these two models for your sequence task, sometimes simpler regressions (e.g. ARIMA) can win out, and sometimes other complicated approaches such as Convolutional Neural Networks might be the best. (Yes, CNNs can be applied to some kinds of sequence data just like RNNs.)
+As always, the best way to know which model is best is to make the models and measure performance on a held out test set.
+Strong Assumptions of HMMs
+State transitions only depend on the current state, not on anything in the past.
+"
+Classic_models,T-distributed Stochastic Neighbor Embedding,"t-SNE is a tool to visualize high-dimensional data. It converts similarities between data points to joint probabilities and tries to minimize the Kullback-Leibler divergence between the joint probabilities of the low-dimensional embedding and the high-dimensional data. t-SNE has a cost function that is not convex, i.e. with different initializations we can get different results.
+It is highly recommended to use another dimensionality reduction method (e.g. PCA for dense data or TruncatedSVD for sparse data) to reduce the number of dimensions to a reasonable amount (e.g. 50) if the number of features is very high. This will suppress some noise and speed up the computation of pairwise distances between samples. For more tips see Laurens van der Maaten’s FAQ [2].
+"
+Classic_models,What kind of regularization techniques are applicable to linear models? ,"AIC/BIC, Ridge regression, Lasso, Elastic Net, Basis pursuit denoising, Rudin–Osher–Fatemi model (TV), Potts model, RLAD, Dantzig Selector, SLOPE
+"
+Classic_models,When do we need to perform feature normalization for linear models? When it’s okay not to do it? ,"Feature normalization is necessary for L1 and L2 regularizations. The idea of both methods is to penalize all the features relatively equally. This can't be done effectively if every feature is scaled differently.
+Linear regression without regularization techniques can be used without feature normalization. Also, regularization can help to make the analytical solution more stable, — it adds the regularization matrix to the feature matrix before inverting it.
+"
+Classic_models,"Which machine learning algorithm is known as the lazy learner, and why is it called so?","KNN is a Machine Learning algorithm known as a lazy learner. K-NN is a lazy learner because it doesn’t learn any machine-learned values or variables from the training data but dynamically calculates distance every time it wants to classify, hence memorizing the training dataset instead. 
+"
+Classic_models,"Is it possible to test for the probability of improving model accuracy without cross-validation techniques? If yes, please explain.","Yes, it is possible to test for the probability of improving model accuracy without cross-validation techniques. We can do so by running the ML model for say n number of iterations, recording the accuracy. Plot all the accuracies and remove the 5% of low probability values. Measure the left [low] cut off and right [high] cut off. With the remaining 95% confidence, we can say that the model can go as low or as high [as mentioned within cut off points]. 
+"
+Classic_models,Name and define techniques used to find similarities in the recommendation system. ,"Pearson correlation and Cosine correlation are techniques used to find similarities in recommendation systems. 
+"
+Classic_models,Random Forest Feature importance,"Permutation importance. The average reduction in accuracy caused by a variable is determined during the calculation of the out-of-bag error. The greater the reduction in accuracy due to an exclusion or permutation of the variable, the higher its importance score. For this reason, variables with a greater average reduction in accuracy are generally more significant for classification.
+Sklearn library uses another approach to determine feature importance. The rationale for that method is that the more gain in information the node (with splitting feature Xj) provides, the higher its importance. The average reduction in the Gini impurity – or MSE for regression – represents the contribution of each feature to the homogeneity of nodes and leaves in the resulting Random Forest model. Each time a selected feature is used for splitting, the Gini impurity of the child nodes is calculated and compared with that of the original node.
+"
+Data,"You run your regression on different subsets of your data, and find that in each subset, the beta value for a certain variable varies wildly. What could be the issue here?","The dataset might be heterogeneous. In which case, it is recommended to cluster datasets into different subsets wisely, and then draw different models for different subsets. Or, use models like non parametric models (trees) which can deal with heterogeneity quite nicely.
+Heterogeneous data are any data with high variability of data types and formats. They are possibly ambiguous and low quality due to missing values, high data redundancy, and untruthfulness.
+
+"
+Data,Is more data always better?,"Statistically,
+It depends on the quality of your data, for example, if your data is biased, just getting more data won’t help.
+It depends on your model. If your model suffers from high bias, getting more data won’t improve your test results beyond a point. You’d need to add more features, etc.
+Practically
+Also there’s a tradeoff between having more data and the additional storage, computational power, memory it requires. Hence, always think about the cost of having more data.
+"
+Data,What are advantages of plotting your data before performing analysis?,"Data sets have errors.  You won't find them all but you might find some. That 212 year old man. That 9 foot tall woman.
+Variables can have skewness, outliers etc.  Then the arithmetic mean might not be useful. Which means the standard deviation isn't useful.
+Variables can be multimodal!  If a variable is multimodal then anything based on its mean or median is going to be suspect. 
+"
+Data,How can you determine which features are the most important in your model?,"run the features though a Gradient Boosting Machine or Random Forest to generate plots of relative importance and information gain for each feature in the ensembles.
+Look at the variables added in forward variable selection 
+"
+Data,Define confounding variables.,"Confounding variables are also known as confounders. These variables are a type of extraneous variables that influence both independent and dependent variables causing spurious association and mathematical relationships between those variables that are associated but are not casually related to each other
+"
+Data,Define and explain selection bias,"The selection bias occurs in the case when the researcher has to make a decision on which participant to study. The selection bias is associated with those researches when the participant selection is not random. The selection bias is also called the selection effect. The selection bias is caused by as a result of the method of sample collection.
+Four types of selection bias are explained below:
+Sampling Bias: As a result of a population that is not random at all, some members of a population have fewer chances of getting included than others, resulting in a biased sample. This causes a systematic error known as sampling bias.
+Time interval: 
+Trials may be stopped early if we reach any extreme value but if all variables are similar invariance, the variables with the highest variance have a higher chance of achieving the extreme value. Early termination of a trial at a time when its results support the desired conclusion.
+Data: It is when specific data is selected arbitrarily and the generally agreed criteria are not followed. Cherry picking, which actually is not selection bias, but confirmation bias, when specific subsets of data are chosen to support a conclusion (e.g. citing examples of plane crashes as evidence of airline flight being unsafe, while ignoring the far more common example of flights that complete safely. See: Availability heuristic)
+Attrition: Attrition in this context means the loss of the participants. It is the discounting of those subjects that did not complete the trial.
+"
+Data,Types of sampling bias,"Self-selection
+Non-response 
+Undercoverage
+Survivorship
+Pre-screening or advertising
+Healthy user
+"
+Data,What is Cross-Validation?,"Cross-Validation is a Statistical technique used for improving a model’s performance. Here, the model will be trained and tested with rotation using different samples of the training dataset to ensure that the model performs well for unknown data. The training data will be split into various groups and the model is run and validated against these groups in rotation.
+The most commonly used techniques are:
+K-Fold method
+Leave p-out method
+Leave-one-out method
+Holdout method
+"
+Data,Dealing with outliers,"Univariate method: This method looks for data points with extreme values on one variable.
+Multivariate method: Here, we look for unusual combinations of all the variables.
+Minkowski error: This method reduces the contribution of potential outliers in the training process.
+"
+Data,The Curse of Dimensionality,"If we have more features than observations than we run the risk  of massively overfitting our model — this would generally result in terrible out of sample performance.
+When we have too many features, observations become harder to cluster — believe it or not, too many dimensions causes every observation in your dataset to appear equidistant from all the others. And because clustering uses a distance measure such as Euclidean distance to quantify the similarity between observations, this is a big problem. If the distances are all approximately equal, then all the observations appear equally alike (as well as equally different), and no meaningful clusters can be formed.
+All samples are close to the edge of the sample. And this is a bad news because prediction is much more difficult near the edges of the training sample.
+The sampling density decreases exponentially as p increases and hence the data becomes much more sparse without significantly more data. 
+We should conduct PCA to reduce dimensionality
+The curse of dimensionality, first introduced by Bellman [1], indicates that the number of samples needed to estimate an arbitrary function with a given level of accuracy grows exponentially with respect to the number of input variables (i.e., dimensionality) of the function.
+"
+Data,What is a Box-Cox Transformation?,"The dependent variable for a regression analysis might not satisfy one or more assumptions of an ordinary least squares regression. The residuals could either curve as the prediction increases or follow the skewed distribution. In such scenarios, it is necessary to transform the response variable so that the data meets the required assumptions. A Box cox transformation is a statistical technique to transform non-normal dependent variables into a normal shape. If the given data is not normal then most of the statistical techniques assume normality. Applying a box cox transformation means that you can run a broader number of tests.
+"
+Data,What is the importance of dimensionality reduction?,"The process of dimensionality reduction constitutes reducing the number of features in a dataset to avoid overfitting and reduce the variance. There are mostly 4 advantages of this process:
+This reduces the storage space and time for model execution.
+Removes the issue of multi-collinearity thereby improving the parameter interpretation of the ML model.
+Makes it easier for visualizing data when the dimensions are reduced.
+Avoids the curse of increased dimensionality. 
+"
+Data,Methods of dimensionality reduction,"Feature Selection Methods
+Matrix Factorization
+Manifold Learning
+Autoencoder Methods
+Linear Discriminant Analysis (LDA)
+Principal component analysis (PCA)
+"
+Data,What is the significance of using the Fourier transform in Deep Learning tasks?,"The Fourier transform function efficiently analyzes, maintains, and manages large datasets. You can use it to generate real-time array data that is helpful for processing multiple signals.
+If the matrices of the input and filters in the CNN can be converted into the frequency domain to perform the multiplication and the outcome matrices of the multiplication in the frequency domain can be converted into the time domain will not perform any harm to the accuracy of the model. The conversion of matrices from the time domain to the frequency domain can be done by the Fourier transform or fast Fourier transform and conversion from the frequency domain to the time domain can be done by the inverse Fourier transform or inverse fast Fourier transform. 
+"
+Data,What if we want to build a model for predicting prices? Are prices distributed normally? Do we need to do any pre-processing for prices? ,"Data is not normal. Specially, real-world datasets or uncleaned datasets always have certain skewness. Same goes for the price prediction. Price of houses or any other thing under consideration depends on a number of factors. So, there's a great chance of presence of some skewed values i.e outliers if we talk in data science terms.
+Yes, you may need to do pre-processing. Most probably, you will need to remove the outliers to make your distribution near-to-normal.
+"
+Data,How do we choose K in K-fold cross-validation? What’s your favorite K? ,"There are two things to consider while deciding K: the number of models we get and the size of validation set. We do not want the number of models to be too less, like 2 or 3. At least 4 models give a less biased decision on the metrics. On the other hand, we would want the dataset to be at least 20-25% of the entire data. So that at least a ratio of 3:1 between training and validation set is maintained.
+I tend to use 4 for small datasets and 5 for large ones as K.
+"
+Data,If a weight for one variable is higher than for another  —  can we say that this variable is more important? ,"Yes - if your predictor variables are normalized.
+Without normalization, the weight represents the change in the output per unit change in the predictor. If you have a predictor with a huge range and scale that is used to predict an output with a very small range - for example, using each nation's GDP to predict maternal mortality rates - your coefficient should be very small. That does not necessarily mean that this predictor variable is not important compared to the others.
+"
+Data,What do you mean by Associative Rule Mining (ARM)?,"Associative Rule Mining is one of the techniques to discover patterns in data like features (dimensions) which occur together and features (dimensions) which are correlated. It is mostly used in Market-based Analysis to find how frequently an itemset occurs in a transaction. Association rules have to satisfy minimum support and minimum confidence at the very same time. Association rule generation generally comprised of two different steps:
+“A min support threshold is given to obtain all frequent item-sets in a database.”
+“A min confidence constraint is given to these frequent item-sets in order to form the association rules.”
+Support is a measure of how often the “item set” appears in the data set and Confidence is a measure of how often a particular rule has been found to be true.
+"
+Deep Learning,How does a batch size influence a model?,"Increasing batch size drops the learners' ability to generalize. The idea is that smaller batches are more likely to push out local minima and find the Global Minima.
+large batch size means the model makes very large gradient updates and very small gradient updates. The size of the update depends heavily on which particular samples are drawn from the dataset. On the other hand using small batch size means the model makes updates that are all about the same size. The size of the update only weakly depends on which particular samples are drawn from the dataset
+Large Batch Training methods tend to overfit compared to the same network trained with smaller batch size.
+Large Batch Training methods tend to get trapped or even attracted to potential saddle points in the loss landscape.
+Large Batch Training methods tend to zoom in on the closest relative minima that it finds, whereas networks trained with a smaller batch size tend to “explore” the loss landscape before settling on a promising minimum.
+Large Batch Training methods tend to converge to completely “different” minima points than networks trained with smaller batch sizes.
+Furthermore, the authors tackled the Generalization Gap from the perspective of how Neural Networks navigate the loss landscape during training. Training with a relatively large batch size tends to converge to sharp minimizers, while reducing the batch size usually leads to falling into flat minimizers. A sharp minimizer can be thought of as a narrow and steep ravine, whereas a flat minimizer is analogous to a valley in a vast landscape of low and mild hill terrains. To phrase it in more rigorous terms:
+Sharp minimizers are characterized by a significant number of large positive eigenvalues of the Hessian Matrix of f(x), while flat minimizers are characterized by a considerable number of smaller positive eigenvalues of the Hessian Matrix of f(x).
+“Falling” into a sharp minimizer may produce a seemingly better loss than a flat minimizer, but it’s more prone to generalizing poorly to unseen datasets. The diagram below illustrates a simple 2-dimensional loss landscape from Keskar et al.
+A sharp minimum compared to a flat minimum. From Keskar et al.
+We assume that the relationship between features and labels of unseen data points is similar to that of the data points that we used for training but not exactly the same. As the example shown above, the “difference” between train and test can be a slight horizontal shift. The parameter values that result in a sharp minimum become a relative maximum when applied to unseen data points due to its narrow accommodation of minimum values. With a flat minimum, though, as shown in the diagram above, a slight shift in the “Testing Function” would still put the model at a relatively minimum point in the loss landscape.
+Typically, adopting a small batch size adds noise to training compared to using a bigger batch size. Since the gradients were estimated with a smaller number of samples, the estimation at each batch update will be rather “noisy” relative to the “loss landscape” of the entire dataset. Noisy training in the early stages is helpful to the model as it encourages exploration of the loss landscape. Keskar et al. also stated that…
+“We have observed that the loss function landscape of deep Neural Networks is such that large-batch methods are attracted to regions with sharp minimizers and that, unlike small-batch methods, are unable to escape basins of attraction of these minimizers.”
+Although larger batch sizes are considered to bring more stability to training, the noisiness that small batch training provides is actually beneficial to explore and avoiding sharp minimizers. We can effectively utilize this fact to design a “batch size scheduler” where we start with a small batch size to allow for exploration of the loss landscape. Once a general direction is decided, we hone in on the (hopefully) flat minimum and increase the batch size to stabilize training. The details of how one can increase the batch size during training to obtain faster and better results are described in the following article.
+"
+Deep Learning,What is Layer Normalization?,"Layer Normalization was proposed by researchers Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E. Hinton. In layer normalization, all neurons in a particular layer effectively have the same distribution across all features for a given input.
+For example, if each input has d features, it’s a d-dimensional vector. If there are B elements in a batch, the normalization is done along the length of the d-dimensional vector and not across the batch of size B.
+Normalizing across all features but for each of the inputs to a specific layer removes the dependence on batches. This makes layer normalization well suited for sequence models such as transformers and recurrent neural networks (RNNs) that were popular in the pre-transformer era.
+Here’s an example showing the computation of the mean and variance for layer normalization. We consider the example of a mini-batch containing three input samples, each with four features.
+From these steps, we see that they’re similar to the steps we had in batch normalization. However, instead of the batch statistics, we use the mean and variance corresponding to specific input to the neurons in a particular layer, say k. This is equivalent to normalizing the output vector from the layer k-1.
+"
+Deep Learning,"
+Batch Normalization vs Layer Normalization","Batch normalization normalizes each feature independently across the mini-batch. Layer normalization normalizes each of the inputs in the batch independently across all features.
+As batch normalization is dependent on batch size, it’s not effective for small batch sizes. Layer normalization is independent of the batch size, so it can be applied to batches with smaller sizes as well.
+Batch normalization requires different processing at training and inference times. As layer normalization is done along the length of input to a specific layer, the same set of operations can be used at both training and inference times.
+Batch Normalization in Convolutional Neural Networks
+Batch Norm works in a very similar way in Convolutional Neural Networks. Although we could do it in the same way as before, we have to follow the convolutional property.
+In convolutions, we have shared filters that go along the feature maps of the input (in images, the feature map is generally the height and width). These filters are the same on every feature map. It is then reasonable to normalize the output, in the same way, sharing it over the feature maps.
+In other words, this means that the parameters used to normalize are calculated along with each entire feature map. In a regular Batch Norm, each feature would have a different mean and standard deviation. Here, each feature map will have a single mean and standard deviation, used on all the features it contains.
+"
+Deep Learning,Why can’t I use Softmax on the hidden layer?,"The following steps explain why using the softmax function on the hidden layer is not a good idea:
+1. Variables independence: A lot of regularization and effort is required to keep your variables independent, uncorrelated and quite sparse. If you use the softmax layer as a hidden layer, then you will keep all your nodes linearly dependent which may result in many problems and poor generalization.
+2. Training issues:  if your network is working better, you have to make a part of activations from your hidden layer a little bit lower. Here automatically you are making the rest of them have mean activation on a higher level which might, in fact, increase the error and harm your training phase.
+3. Mathematical issues: If you create constraints on activations of your model you decrease the expressive power of your model without any logical explanation. 
+4. Batch normalization does it better: You may consider the fact that mean output from a network may be useful for training. But on the other hand, a technique called Batch Normalization has been already proven to work better, but it was reported that setting softmax as the activation function in a hidden layer may decrease the accuracy and speed of learning.
+"
+Deep Learning,Global Average Pooling,"The feature maps of the last convolutional layer are vectorized and fed into fully connected layers followed by a softmax logistic regression layer. This structure bridges the convolutional structure with traditional neural networks. It treats the convolutional layers as feature extractors, and the resulting feature is classified in a traditional way. 
+The fully connected layers are prone to overfitting. You can use Dropout as a regularizer which randomly sets half of the activations to the fully connected layers to zero during training. It has improved the generalization ability and largely prevents overfitting. 
+You can use another strategy called global average pooling to replace the Flatten layers in CNN. It generates one feature map for each corresponding category of the classification task in the last Conv layer.
+"
+Deep Learning,What are some of the uses of Autoencoders in Deep Learning?,"An autoencoder is a type of artificial neural network used to learn data encodings in an unsupervised manner.
+The aim of an autoencoder is to learn a lower-dimensional representation (encoding) for a higher-dimensional data, typically for dimensionality reduction, by training the network to capture the most important parts of the input image.
+Autoencoders are used to convert black and white images into colored images.
+Autoencoder helps to extract features and hidden patterns in the data.
+It is also used to reduce the dimensionality of data.
+It can also be used to remove noises from images.
+"
+Deep Learning,Why is a convolutional neural network preferred over a dense neural network for an image classification task?,"The number of parameters in a convolutional neural network is much more diminutive than that of a Dense Neural Network. Hence, a CNN is less likely to overfit.
+CNN allows you to look at the weights of a filter and visualize what the network learned. So, this gives a better understanding of the model.
+CNN trains models in a hierarchical way, i.e., it learns the patterns by explaining complex patterns using simpler ones.
+"
+Deep Learning,Xavier (Glorot) initialization ,"Xavier initialization sets a layer’s weights to values chosen from a random uniform distribution that’s bounded between +-sqrt(6/(ni+ni+1))
+where nᵢ is the number of incoming network connections, or “fan-in,” to the layer, and nᵢ₊₁ is the number of outgoing network connections from that layer, also known as the “fan-out.”
+"
+Deep Learning,Gradient Descent,"We now consider the problem of solving for the minimum of a real-valued function min x f(x), where f : Rd → R is an objective function that captures the machine learning problem at hand. We assume that our function f is differentiable, and we are unable to analytically find a solution in closed form. Gradient descent is a first-order optimization algorithm. To find a local minimum of a function using gradient descent, one takes steps proportional to the negative of the gradient of the function at the current point. Recall that the gradient points in the direction of steepest ascent.
+Let us consider multivariate functions. Imagine a surface (described by the function f(x)) with a ball starting at a particular location x0. When the ball is released, it will move downhill in the direction of steepest descent. Gradient descent exploits the fact that f(x0) decreases fastest if one moves from x0 in the direction of the negative gradient −((∇f)(x0))⊤ of f at x0. We assume in this book that the functions are differentiable, and refer the reader to more general settings in Section 7.4. Then, if x1 = x0 − γ((∇f)(x0))⊤ (7.5) for a small step-size γ ⩾ 0, then f(x1) ⩽ f(x0). Note that we use the transpose for the gradient since otherwise the dimensions will not work out. This observation allows us to define a simple gradient descent algorithm: If we want to find a local optimum f(x∗) of a function f : Rn → R, x 7→ f(x), we start with an initial guess x0 of the parameters we wish to optimize and then iterate according to xi+1 = xi − γi((∇f)(xi))⊤ . (7.6) For suitable step-size γi , the sequence f(x0) ⩾ f(x1) ⩾ . . . converges to a local minimum.
+"
+Deep Learning,Step size in Gradient Descent,"Choosing a good step-size, or learning rate, is important in gradient descent. If the step-size is too small, gradient descent can be slow. If the step-size is chosen too large, gradient descent can overshoot, fail to converge, or even diverge
+There are two simple heuristics: 
+When the function value increases after a gradient step, the step-size was too large. Undo the step and decrease the step-size. 
+When the function value decreases the step could have been larger. Try to increase the step-size.
+"
+Deep Learning,Solving a Linear Equation System with Gradient Descent,"When we solve linear equations of the form Ax = b, in practice we solve Ax−b = 0 approximately by finding x∗ that minimizes the squared error 
+∥Ax − b∥^2 = (Ax − b) ⊤(Ax − b)
+ if we use the Euclidean norm. The gradient of (7.9) with respect to x is 
+∇x = 2(Ax − b) ⊤A
+We can use this gradient directly in a gradient descent algorithm. However, for this particular special case, it turns out that there is an analytic solution, which can be found by setting the gradient to zero.
+When applied to the solution of linear systems of equations Ax = b, gradient descent may converge slowly. The speed of convergence of gradient descent is dependent on the condition number κ = σ(A)/max σ(A)min, which is the ratio of the maximum to the minimum singular value of A. The condition number essentially measures the ratio of the most curved direction versus the least curved direction, which corresponds to our imagery that poorly conditioned problems are long, thin valleys: They are very curved in one direction, but very flat in the other. Instead of directly solving Ax = b, one could instead solve P −1 (Ax − b) = 0, where P is called the preconditioner. The goal is to design P −1 such that P −1A has a better condition number, but at the same time P −1 is easy to compute.
+"
+Deep Learning,Gradient Descent With Momentum,"Gradient descent with momentum (Rumelhart et al., 1986) is a method that introduces an additional term to remember what happened in the previous iteration. This memory dampens oscillations and smoothes out the gradient updates. Continuing the ball analogy, the momentum term emulates the phenomenon of a heavy ball that is reluctant to change directions. The idea is to have a gradient update with memory to implement a moving average. The momentum-based method remembers the update ∆xi at each iteration i and determines the next update as a linear combination of the current and previous gradients 
+xi+1 = xi − γi((∇f)(xi))⊤ + α∆xi
+∆xi = xi − xi−1 = α∆xi−1 − γi−1((∇f)(xi−1))⊤ ,
+where α ∈ [0, 1]. Sometimes we will only know the gradient approximately. In such cases, the momentum term is useful since it averages out different noisy estimates of the gradient. One particularly useful way to obtain an approximate gradient is by using a stochastic approximation, which we discuss next
+"
+Deep Learning,Stochastic Gradient Descent,"Stochastic gradient descent descent (often shortened as SGD) is a stochastic approximation of the gradient descent method for minimizing an objective function that is written as a sum of differentiable functions. The word stochastic here refers to the fact that we acknowledge that we do not know the gradient precisely, but instead only know a noisy approximation to it. By constraining the probability distribution of the approximate gradients, we can still theoretically guarantee that SGD will converge.
+Why should one consider using an approximate gradient? A major reason is practical implementation constraints, such as the size of central processing unit (CPU)/graphics processing unit (GPU) memory or limits on computational time. We can think of the size of the subset used to estimate the gradient in the same way that we thought of the size of a sample when estimating empirical means. Large mini-batch sizes will provide accurate estimates of the gradient, reducing the variance in the parameter update. Furthermore, large mini-batches take advantage of highly optimized matrix operations in vectorized implementations of the cost and gradient. The reduction in variance leads to more stable convergence, but each gradient calculation will be more expensive.
+In contrast, small mini-batches are quick to estimate. If we keep the mini-batch size small, the noise in our gradient estimate will allow us to get out of some bad local optima, which we may otherwise get stuck in. In machine learning, optimization methods are used for training by minimizing an objective function on the training data, but the overall goal is to improve generalization performance. Since the goal in machine learning does not necessarily need a precise estimate of the minimum of the objective function, approximate gradients using mini-batch approaches have been widely used. Stochastic gradient descent is very effective in large-scale machine learning problems.
+"
+Deep Learning,Constrained Optimization and Lagrange Multipliers,"we consider the constrained optimization problem 
+min x f(x) 
+subject to gi(x) ⩽ 0 for all i = 1, . . . , m .
+We associate to problem the Lagrangian by introducing the Lagrange multipliers λi ⩾ 0 corresponding to each inequality constraint respectively so that
+L(x,λ) = f(x) +sum_i=1..m(λi * gi(x)) = f(x) + λ ⊤ g(x), 
+where in the last line we have concatenated all constraints gi(x) into a vector g(x), and all the Lagrange multipliers into a vector λ ∈ Rm. 
+The associated Lagrangian dual problem is given by problem 
+max λ∈Rm D(λ) 
+subject to λ ⩾ 0 , 
+where λ are the dual variables and D(λ) = minx∈Rd L(x,λ).
+In contrast to the original optimization problem, which has constraints, minx∈Rd L(x,λ) is an unconstrained optimization problem for a given value of λ. If solving minx∈Rd L(x,λ) is easy, then the overall problem is easy to solve. We can see this by observing from that L(x,λ) is affine with respect to λ. Therefore minx∈Rd L(x,λ) is a pointwise minimum of affine functions of λ, and hence D(λ) is concave even though f(·) and gi(·) may be nonconvex. The outer problem, maximization over λ, is the maximum of a concave function and can be efficiently computed.
+Assuming f(·) and gi(·) are differentiable, we find the Lagrange dual problem by differentiating the Lagrangian with respect to x, setting the differential to zero, and solving for the optimal value.
+"
+Math,Matrix differentiation,"In mathematics, a real-valued function is called convex if the line segment between any two distinct points on the graph of the function lies above the graph between the two points. Equivalently, a function is convex if its epigraph (the set of points on or above the graph of the function) is a convex set. 
+Concave function is one for which the value at any convex combination of elements in the domain is greater than or equal to the convex combination of the values at the endpoints. 
+Let function f : RD → R be a function whose domain is a convex set. The function f is a convex function if for all x, y in the domain convex function of f, and for any scalar θ with 0 ⩽ θ ⩽ 1, we have 
+f(θx + (1 − θ)y) ⩽ θf(x) + (1 − θ)f(y).
+A concave function is the negative of a convex function
+A function f(x) is convex if and only if for any two points x, y it holds that 
+f(y) ⩾ f(x) + ∇xf(x) ⊤(y − x).
+If we further know that a function f(x) is twice differentiable, that is, the Hessian exists for all values in the domain of x, then the function f(x) is convex if and only if ∇2 x f(x) is positive semidefinite
+"
+Math,Supporting hyperplane,"In geometry, a supporting hyperplane of a set S in Euclidean space Rn is a hyperplane that has both of the following two properties: 
+Sis entirely contained in one of the two closed half-spaces bounded by the hyperplane,
+S has at least one boundary-point on the hyperplane.
+"
+Math,Legendre–Fenchel Transform and Convex Conjugate,"The Legendre-Fenchel transform is a transformation from a convex differentiable function f(x) to a function that depends on the tangents s(x) = ∇f(x). It is worth stressing that this is a transformation of the function f(·) and not the variable x or the function evaluated at x. The Legendre-Fenchel transform is also known as the convex conjugate and is closely related to duality.
+The convex conjugate of a function f : RD → R is a function f ∗ defined by 
+f ∗ (s) = sup x∈RD (⟨s, x⟩ − f(x)) .
+We can reconstruct any function f(x), with some restriction, by just knowing its tangent line at each point on its graph.
+Describing the tangent line of a function, on the other hand, requires two pieces of information; the slope of the line at each point, given by the value of df/dx, and the y-interception of the line at each point, b.
+Therefore, we can encode all the information of a function f(x) into just these two values and this is indeed exactly what the Legendre transformation does; generates a new function from df/dx and b.
+The important thing about this is that the Legendre transformation of a function then contains exactly the same information as the original function, just “presented” in a different way. This is why it’s useful in the first place.
+"
+Metrics,Why F1-Score is a Harmonic Mean(HM) of Precision and Recall?,"Precision = 0, Recall = 1
+Avg = 0.5
+F1 = 0
+"
+Metrics,What is Average Precision?,"Average precision is the area under the PR curve.
+AP summarizes the PR Curve to one scalar value. Average precision is high when both precision and recall are high, and low when either of them is low across a range of confidence threshold values. The range for AP is between 0 to 1.
+"
+Metrics,In which cases AU PR is better than AU ROC? ,"AU ROC looks at a true positive rate TPR and false positive rate FPR while AU PR looks at positive predictive value PPV and true positive rate TPR.
+Typically, if true negatives are not meaningful to the problem or you care more about the positive class, AU PR is typically going to be more useful; otherwise, If you care equally about the positive and negative class or your dataset is quite balanced, then going with AU ROC is a good idea.
+"
+Metrics,"What are some differences you would expect in a model that minimizes squared error, versus a model that minimizes absolute error? In which cases would each error metric be appropriate?","MSE is more strict to having outliers. MAE is more robust in that sense, but is harder to fit the model for because it cannot be numerically optimized. So when there are less variability in the model and the model is computationally easy to fit, we should use MAE, and if that’s not the case, we should use MSE.
+MSE: easier to compute the gradient, MAE: linear programming needed to compute the gradient
+MAE more robust to outliers. If the consequences of large errors are great, use MSE
+MSE corresponds to maximizing likelihood of Gaussian random variables
+"
+Metrics,"Define the terms KPI, lift, model fitting, robustness and DOE. ","KPI: KPI stands for Key Performance Indicator that measures how well the business achieves its objectives.
+Lift: This is a performance measure of the target model measured against a random choice model. Lift indicates how good the model is at prediction versus if there was no model.
+Model fitting: This indicates how well the model under consideration fits given observations.
+Robustness: This represents the system’s capability to handle differences and variances effectively.
+DOE: stands for the design of experiments, which represents the task design aiming to describe and explain information variation under hypothesized conditions to reflect variables.
+Design of experiments (DOE) is a systematic, efficient method that enables scientists and engineers to study the relationship between multiple input variables (aka factors) and key output variables (aka responses). It is a structured approach for collecting data and making discoveries.
+"
+Statistics,A comparison of the Pearson and Spearman correlation methods,"Pearson = +0.851, Spearman = +1
+A correlation coefficient measures the extent to which two variables tend to change together. The coefficient describes both the strength and the direction of the relationship. Minitab offers two different correlation analyses:
+The Pearson correlation evaluates the linear relationship between two continuous variables. A relationship is linear when a change in one variable is associated with a proportional change in the other variable.
+For example, you might use a Pearson correlation to evaluate whether increases in temperature at your production facility are associated with decreasing thickness of your chocolate coating.
+The Spearman correlation evaluates the monotonic relationship between two continuous or ordinal variables. In a monotonic relationship, the variables tend to change together, but not necessarily at a constant rate. The Spearman correlation coefficient is based on the ranked values for each variable rather than the raw data.
+Spearman correlation is often used to evaluate relationships involving ordinal variables. For example, you might use a Spearman correlation to evaluate whether the order in which employees complete a test exercise is related to the number of months they have been employed.
+"
+Statistics,What Is a Variance Inflation Factor (VIF)? ,"A variance inflation factor (VIF) is a measure of the amount of multicollinearity in regression analysis. Multicollinearity exists when there is a correlation between multiple independent variables in a multiple regression model. This can adversely affect the regression results. Thus, the variance inflation factor can estimate how much the variance of a regression coefficient is inflated due to multicollinearity. 
+  Detecting multicollinearity is important because while multicollinearity does not reduce the explanatory power of the model, it does reduce the statistical significance of the independent variables. 
+  A large VIF on an independent variable indicates a highly collinear relationship to the other variables that should be considered or adjusted for in the structure of the model and selection of independent variables.
+The formula for VIF is:
+VIFi=11−Ri2where:Ri2=Unadjusted coefficient of determination forregressing the ith independent variable on theremaining ones
+What Is a Good VIF Value?
+As a rule of thumb, a VIF of three or below is not a cause for concern. As VIF increases, the less reliable your regression results are going to be.
+What Does a VIF of 1 Mean?
+A VIF equal to one means variables are not correlated and multicollinearity does not exist in the regression model.
+"
+Statistics,How do we check if a variable follows the normal distribution? ,"Plot a histogram out of the sampled data. If you can fit the bell-shaped ""normal"" curve to the histogram, then the hypothesis that the underlying random variable follows the normal distribution can not be rejected.
+Check Skewness and Kurtosis of the sampled data. Skewness = 0 and kurtosis = 3 are typical for a normal distribution, so the farther away they are from these values, the more non-normal the distribution.
+Use Kolmogorov-Smirnov or/and Shapiro-Wilk tests for normality. They take into account both Skewness and Kurtosis simultaneously.
+Check for Quantile-Quantile plot. It is a scatterplot created by plotting two sets of quantiles against one another. Normal Q-Q plot place the data points in a roughly straight line.
+"
+Statistics,What could be some issues if the distribution of the test data is significantly different than the distribution of the training data?,"The model that has high training accuracy might have low test accuracy. Without further knowledge, it is hard to know which dataset represents the population data and thus the generalizability of the algorithm is hard to measure. This should be mitigated by repeated splitting of train vs test dataset (as in cross validation).
+When there is a change in data distribution, this is called the dataset shift. If the train and test data has a different distribution, then the classifier would likely overfit to the train data.
+This issue can be overcome by using a more general learning method.
+This can occur when:
+P(y|x) are the same but P(x) are different. (covariate shift)
+P(y|x) are different. (concept shift)
+The causes can be:
+Training samples are obtained in a biased way. (sample selection bias)
+Train is different from test because of temporal, spatial changes. (non-stationary environments)
+Solution to covariate shift
+importance weighted cv
+"
+Statistics,What is alpha- and beta-values?,"Alpha is also known as the level of significance. This represents the probability of obtaining your results due to chance. The smaller this value is, the more “unusual” the results, indicating that the sample is from a different population than it’s being compared to, for example. Commonly, this value is set to .05 (or 5%), but can take on any value chosen by the research not exceeding .05.
+Alpha also represents your chance of making a Type I Error. What’s that? The chance that you reject the null hypothesis when in reality, you should fail to reject the null hypothesis. In other words, your sample data indicates that there is a difference when in reality, there is not. Like a false positive.
+The other key-value relates to the power of your study. Power refers to your study’s ability to find a difference if there is one. It logically follows that the greater the power, the more meaningful your results are. Beta = 1 – Power. Values of beta should be kept small, but do not have to be as small as alpha values. Values between .05 and .20 are acceptable.
+Beta also represents the chance of making a Type II Error. As you may have guessed, this means that you came to the wrong conclusion in your study, but it’s the opposite of a Type I Error. With a Type II Error, you incorrectly fail to reject the null. In simpler terms, the data indicates that there is not a significant difference when in reality there is. Your study failed to capture a significant finding. Like a false negative.
+"
+Statistics,What are the confidence intervals of the coefficients?,"Confidence interval (CI) is a type of interval estimate (of a population parameter) that is computed from the observed data. The confidence level is the frequency (i.e., the proportion) of possible confidence intervals that contain the true value of their corresponding parameter. In other words, if confidence intervals are constructed using a given confidence level in an infinite number of independent experiments, the proportion of those intervals that contain the true value of the parameter will match the confidence level.
+Confidence intervals consist of a range of values (interval) that act as good estimates of the unknown population parameter. However, the interval computed from a particular sample does not necessarily include the true value of the parameter. Since the observed data are random samples from the true population, the confidence interval obtained from the data is also random. If a corresponding hypothesis test is performed, the confidence level is the complement of the level of significance, i.e. a 95% confidence interval reflects a significance level of 0.05. If it is hypothesized that a true parameter value is 0 but the 95% confidence interval does not contain 0, then the estimate is significantly different from zero at the 5% significance level.
+The desired level of confidence is set by the researcher (not determined by data). Most commonly, the 95% confidence level is used. However, other confidence levels can be used, for example, 90% and 99%.
+Factors affecting the width of the confidence interval include the size of the sample, the confidence level, and the variability in the sample. A larger sample size normally will lead to a better estimate of the population parameter. A Confidence Interval is a range of values we are fairly sure our true value lies in.
+X ± Z*s/√(n), X is the mean, Z is the chosen Z-value from the table, s is the standard deviation, n is the number of samples. The value after the ± is called the margin of error.
+"
+Statistics,Bayesian and frequentist probabilities,"The Bayesian interpretation uses probability to specify the degree of uncertainty that the user has about an event. It is sometimes referred to as “subjective probability” or “degree of belief”. The frequentist interpretation considers the relative frequencies of events of interest to the total number of events that occurred. The probability of an event is defined as the relative frequency of the event in the limit when one has infinite data.
+"
+Statistics,What is difference between Probability and Statistics?,"Probability theory and statistics are often presented together, but they concern different aspects of uncertainty. One way of contrasting them is by the kinds of problems that are considered. Using probability, we can consider a model of some process, where the underlying uncertainty is captured by random variables, and we use the rules of probability to derive what happens. In statistics, we observe that something has happened and try to figure out the underlying process that explains the observations. In this sense, machine learning is close to statistics in its goals to construct a model that adequately represents the process that generated the data. We can use the rules of probability to obtain a “best-fitting” model for some data.
+"
+Statistics,Discrete and Continuous Probabilities ,"Depending on whether the target space is discrete or continuous, the natural way to refer to distributions is different. When the target space T is discrete, we can specify the probability that a random variable X takes a particular value x ∈ T , denoted as P(X = x). The expression P(X = x) for a discrete random variable X is known as the probability mass function. When the target space T is continuous, e.g., function the real line R, it is more natural to specify the probability that a random variable X is in an interval, denoted by P(a ⩽ X ⩽ b) for a < b. By convention, we specify the probability that a random variable X is less than a particular value x, denoted by P(X ⩽ x). The expression P(X ⩽ x) for cumulative a continuous random variable X is known as the cumulative distribution function
+"
+Statistics,"Joint, marginal and conditional probabilities ","For two random variables X and Y , the probability that X = x and Y = y is (lazily) written as p(x, y) and is called the joint probability. One can think of a probability as a function that takes state x and y and returns a real number, which is the reason we write p(x, y). The marginal probability that X takes the value x irrespective of the value of random variable Y is (lazily) written as p(x). We write X ∼ p(x) to denote that the random variable X is distributed according to p(x). If we consider only the instances where X = x, then the fraction of instances (the conditional probability) for which Y = y is written (lazily) as p(y | x).
+"
+Statistics,Probability Density Function,"A function f : RD → R is called a probability density function (pdf ) if probability density function 
+1. ∀x ∈ R pdf D : f(x) ⩾ 0 
+2. Its integral exists and Z RD f(x)dx = 1.
+For probability mass functions (pmf) of discrete random variables, the integral in is replaced with a sum
+"
+Statistics,Cumulative Distribution Function,"A cumulative distribution function (cdf) of a multivariate real-valued random variable X with states x ∈ RD is given by FX(x) = P(X1 ⩽ x1, . . . , XD ⩽ xD), where X = [X1, . . . , XD] ⊤, x = [x1, . . . , xD] ⊤, and the right-hand side represents the probability that random variable Xi takes the value smaller than or equal to xi . There are cdfs, which do not have corresponding pdfs. The cdf can be expressed also as the integral of the probability density function f(x)
+"
+Statistics,Bayes’ Theorem,"In machine learning and Bayesian statistics, we are often interested in making inferences of unobserved (latent) random variables given that we have observed other random variables. Let us assume we have some prior knowledge p(x) about an unobserved random variable x and some relationship p(y | x) between x and a second random variable y, which we can observe. If we observe y, we can use Bayes’ theorem to draw some conclusions about x given the observed values of y.
+p(x) is the prior, which encapsulates our subjective prior prior knowledge of the unobserved (latent) variable x before observing any data. We can choose any prior that makes sense to us, but it is critical to ensure that the prior has a nonzero pdf (or pmf) on all plausible x, even if they are very rare.
+The likelihood p(y | x) describes how x and y are related, and in the case of discrete probability distributions, it is the probability of the data y if we were to know the latent variable x. Note that the likelihood is not a distribution in x, but only in y. We call p(y | x) either the “likelihood of x (given y)” or the “probability of y given x” but never the likelihood of y. 
+The posterior p(x | y) is the quantity of interest in Bayesian statistics posterior because it expresses exactly what we are interested in, i.e., what we know about x after having observed y.
+p(y) := Z p(y | x)p(x)dx = EX[p(y | x)] is the marginal likelihood/evidence. 
+The marginal likelihood is independent of x, and it ensures that the posterior p(x | y) is normalized. The marginal likelihood can also be interpreted as the expected likelihood where we take the expectation with respect to the prior p(x).
+"
+Statistics,"Covariance, Variance, Correlation","The covariance between two univariate random variables X, Y ∈ R is given by the expected product of their deviations from their respective means, i.e., CovX,Y [x, y] := EX,Y [(x − EX[x])(y − EY [y])]
+By using the linearity of expectations, the expression in Definition 6.5 can be rewritten as the expected value of the product minus the product of the expected values, i.e., Cov[x, y] = E[xy] − E[x]E[y] .
+The covariance of a variable with itself Cov[x, x] is called the variance is denoted by VX[x]. The square root of the variance is called the standard deviation and is often denoted by σ(x). The notion of covariance can be generalized to multivariate random variables.
+The correlation between two random variables X, Y is given by corr[x, y] = Cov[x, y] /sqrt(V[x]V[y]) ∈ [−1, 1] . The correlation matrix is the covariance matrix of standardized random variables, x/σ(x). In other words, each random variable is divided by its standard deviation (the square root of the variance) in the correlation matrix. The covariance (and correlation) indicate how two random variables are related. Positive correlation corr[x, y] means that when x grows, then y is also expected to grow. Negative correlation means that as x increases, then y decreases.
+"
+Statistics,Gaussian Mixture,"Consider a mixture of two univariate Gaussian densities p(x) = αp1(x) + (1 − α)p2(x), (6.80) where the scalar 0 < α < 1 is the mixture weight, and p1(x) and p2(x) are univariate Gaussian densities with different parameters, i.e., (µ1, σ2 1 ) ̸= (µ2, σ2 2 ). Then the mean of the mixture density p(x) is given by the weighted sum of the means of each random variable: E[x] = αµ1 + (1 − α)µ2 . The variance of the mixture density p(x) is given by V[x] =  ασ2 1 + (1 − α)σ 2 2  +  αµ2 1 + (1 − α)µ 2 2  − [αµ1 + (1 − α)µ2] 2 .
+"
+Statistics,Beta Distribution,"We may wish to model a continuous random variable on a finite interval. The Beta distribution is a distribution over a continuous random variable µ ∈ [0, 1], which is often used to represent the probability for some binary event (e.g., the parameter governing the Bernoulli distribution). The Beta distribution Beta(α, β) (illustrated in Figure 6.11) itself is governed by two parameters α > 0, β > 0 and is defined as
+Intuitively, α moves probability mass toward 1, whereas β moves probability mass toward 0. There are some special cases: For α = 1 = β, we obtain the uniform distribution U[0, 1]. For α, β < 1, we get a bimodal distribution with spikes at 0 and 1. For α, β > 1, the distribution is unimodal. For α, β > 1 and α = β, the distribution is unimodal, symmetric, and centered in the interval [0, 1], i.e., the mode/mean is at 1/2 .
+"
+Statistics,Conjugate Prior,"According to Bayes’ theorem (6.23), the posterior is proportional to the product of the prior and the likelihood. The specification of the prior can be tricky for two reasons: First, the prior should encapsulate our knowledge about the problem before we see any data. This is often difficult to describe. Second, it is often not possible to compute the posterior distribution analytically. However, there are some priors that are computationally: conjugate priors.
+A prior is conjugate for the likelihood function if the posterior is of the same form/type as the prior
+Conjugacy is particularly convenient because we can algebraically calculate our posterior distribution by updating the parameters of the prior distribution.
+The Beta distribution is the conjugate prior for the parameter µ in both the Binomial and the Bernoulli likelihood. For a Gaussian likelihood function, we can place a conjugate Gaussian prior on the mean. The reason why the Gaussian likelihood appears twice in the table is that we need to distinguish the univariate from the multivariate case. In the univariate (scalar) case, the inverse Gamma is the conjugate prior for the variance. In the multivariate case, we use a conjugate inverse Wishart distribution as a prior on the covariance matrix. The Dirichlet distribution is the conjugate prior for the multinomial likelihood function.
+"
+Statistics,Are there any differences between the expected value and mean value?,"Expected value is used when we want to calculate the mean of a probability distribution. This represents the average value we expect to occur before collecting any data. Mean is typically used when we want to calculate the average value of a given sample.
+
+"
+Statistics,How do you identify if a coin is biased?,"We collect data by flipping the coin 200 times. 
+To perform a chi-square test (or any other statistical test), we first must establish our null hypothesis. In this example, our null hypothesis is that the coin should be equally likely to land head-up or tails-up every time. The null hypothesis allows us to state expected frequencies. For 200 tosses, we would expect 100 heads and 100 tails.
+The Observed values are those we gather ourselves. The expected values are the frequencies expected, based on our null hypothesis. We total the rows and columns as indicated. It's a good idea to make sure that the row totals equal the column totals (both total to 400 in this example).
+Using probability theory, statisticians have devised a way to determine if a frequency distribution differs from the expected distribution. To use this chi-square test, we first have to calculate chi-squared.
+Chi-squared = (observed-expected)2/(expected)
+We have two classes to consider in this example, heads and tails.
+Now we have to consult a table of critical values of the chi-squared distribution. 
+The left-most column list the degrees of freedom (df). We determine the degrees of freedom by subtracting one from the number of classes. In this example, we have two classes (heads and tails), so our degrees of freedom is 1. Our chi-squared value is 1.28. Move across the row for 1 df until we find critical numbers that bound our value. In this case, 1.07 (corresponding to a probability of 0.30) and 1.64 (corresponding to a probability of 0.20). We can interpolate our value of 1.24 to estimate a probability of 0.27. This value means that there is a 73% chance that our coin is biased. In other words, the probability of getting 108 heads out of 200 coin tosses with a fair coin is 27%. In biological applications, a probability � 5% is usually adopted as the standard. This value means that the chances of an observed value arising by chance is only 1 in 20. Because the chi-squared value we obtained in the coin example is greater than 0.05 (0.27 to be precise), we accept the null hypothesis as true and conclude that our coin is fair.
+"
+Statistics,Exponential Family,"An exponential family is a family of probability distributions, parameterized by θ ∈ RD, of the form p(x | θ) = h(x) exp (⟨θ, ϕ(x)⟩ − A(θ)) , (6.107) where ϕ(x) is the vector of sufficient statistics. In general, any inner product (Section 3.2) can be used in (6.107), and for concreteness we will use the standard dot product here (⟨θ, ϕ(x)⟩ = θ ⊤ϕ(x)). Note that the form of the exponential family is essentially a particular expression of gθ(ϕ(x)) in the Fisher-Neyman theorem
+Exponential families include many of the most common distributions. Among many others, exponential families includes the following:[6]
+normal
+exponential
+gamma
+chi-squared
+beta
+Dirichlet
+Bernoulli
+categorical
+Poisson
+Wishart
+inverse Wishart
+geometric
+"
+Statistics,What Is a Statistical Interaction?,"A statistical interaction is when two or more variables interact, and this results in a third variable being affected. 
+Examples. Real-world examples of interaction include: Interaction between adding sugar to coffee and stirring the coffee. Neither of the two individual variables has much effect on sweetness but a combination of the two does.
+"
