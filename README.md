@@ -11,6 +11,6 @@ Inspired by the transformative potential LLMs have in understanding and generati
 - **Elasticsearch**
 - **Large Language Models**
 
-## TBD:
+## Next:
 - **More Data**
 - **Telegram Bot API**
