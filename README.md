@@ -9,8 +9,16 @@ Inspired by the transformative potential LLMs have in understanding and generati
 ## Tech Stack 
 - **Python**
 - **Elasticsearch**
-- **Large Language Models**
+- **Huggingface Mixtral-8x7B**
+
+## Steps
+- [Prepare data](https://github.com/mary-el/rag-ds-interview/blob/main/data_preparation.ipynb)
+- docker compose up
+- [RAG](https://github.com/mary-el/rag-ds-interview/blob/main/rag.ipynb)
 
 ## Next:
 - **More Data**
 - **Telegram Bot API**
+
+## Acknowledgments
+I would like to thank for the course on building a Q&A system [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)
