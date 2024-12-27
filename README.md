@@ -18,12 +18,12 @@ Inspired by the transformative potential LLMs have in understanding and generati
 
 ## Data Sections
 - [Classical ML](https://github.com/mary-el/rag-ds-interview/blob/main/docs/Classical_models/Classical_models.md)
-- [Data](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Data)
-- [Metrics](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Metrics)
-- [Probability and Statistics](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Probability_and_Statistics)
-- [Deep Learning](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Deep%20Learning)
-- [Classical NLP](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Classical_NLP)
-- [LLM](https://github.com/mary-el/rag-ds-interview/tree/main/docs/LLM)
+- [Data](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Data/Data.md)
+- [Metrics](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Metrics/Metrics.md)
+- [Probability and Statistics](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Probability_and_Statistics/Probability_and_Statistics.md)
+- [Deep Learning](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Deep%20Learning/Deep%20Learning.md)
+- [Classical NLP](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Classical_NLP/Classical_NLP.md)
+- [LLM](https://github.com/mary-el/rag-ds-interview/tree/main/docs/LLM/LLM.md)
 
 ## Next:
 - **More Sections**
