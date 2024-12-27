@@ -16,8 +16,17 @@ Inspired by the transformative potential LLMs have in understanding and generati
 - docker compose up
 - [RAG](https://github.com/mary-el/rag-ds-interview/blob/main/rag.ipynb)
 
+## Data Sections
+- [Classical ML](https://github.com/mary-el/rag-ds-interview/blob/main/docs/Classical_models/Classical_models.md)
+- [Data](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Data)
+- [Metrics](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Metrics)
+- [Probability and Statistics](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Probability_and_Statistics)
+- [Deep Learning](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Deep%20Learning)
+- [Classical NLP](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Classical_NLP)
+- [LLM](https://github.com/mary-el/rag-ds-interview/tree/main/docs/LLM)
+
 ## Next:
-- **More Data**
+- **More Sections**
 - **Telegram Bot API**
 
 ## Acknowledgments
