@@ -1,0 +1,12 @@
+embedding:
+  model: "sentence-transformers/all-MiniLM-L6-v2"
+  dim: 384
+
+faiss:
+  index_path: "indexes/faiss.index"
+  distance: "l2"
+
+doc_parsing:
+  input_dir: "data/docs"
+  files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
+         'Metrics.docx', 'Probability_and_Statistics.docx']

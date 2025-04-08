@@ -1,13 +1,71 @@
-version: '3'
+version: "3.9"
 services:
-    elasticsearch:
-        image:  docker.io/elasticsearch:8.4.3
-        container_name: elasticsearch
-        restart: unless-stopped
-        ports:
-            - 9200:9200
-            - 9300:9300
-        environment:
-            - discovery.type=single-node
-            - xpack.security.enabled=false
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#  app:
+#    build: .
+#    container_name: my_app_container
+#    command: ["python", "main.py"]
+##    environment:
+##      - ENV_VARIABLE=value
+#    volumes:
+#      - .:/app
+#    depends_on:
+#      - postgres
+
+  postgres:
+    container_name: postgres_container
+    image: postgres:14.8-alpine3.18
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: "./pgdata"
+    volumes:
+      - type: bind
+        source: ./ds-data
+        target: /var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d   # DB initialization
+    ports:
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "password"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - type: bind
+        source: ./pgadmin-data
+        target: /var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+volumes:
+  ds-data:
+  pgadmin-data:
+networks:
+  postgres:
+    driver: bridge
