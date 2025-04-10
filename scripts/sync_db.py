@@ -1,19 +1,20 @@
-import hashlib
 from pathlib import Path
 
-import pandas as pd
-from psycopg2.extras import execute_values
 import numpy as np
+import pandas as pd
+import tqdm
 
 from app import get_connection, get_faiss_index
+from app.embedder import get_embeddings
 from configs import load_config
 from scripts.doc_parser import parse_documents
-from scripts.embedder import get_embeddings
 from scripts.utils import hash_text, insert_records, update_record
-import tqdm
 
 
 def sync_db():
+    """
+    Synchronize database with documents
+    """
     conn = get_connection()
     config = load_config()
     doc_files = [Path(config['doc_parsing']['input_dir']) / doc for doc in config['doc_parsing']['files']]
@@ -32,14 +33,14 @@ def sync_db():
                 if row:
                     doc_id, existing_hash = row
                     if new_hash != existing_hash:
-                        # Обновляем текст и хэш
+                        # Updating text and hash
                         embedding = get_embeddings([rec["text"]])
                         update_record(cursor, rec, doc_id)
                         recs_updated += 1
                         faiss_index.remove_ids(np.array([doc_id]))
                         faiss_index.add_with_ids(embedding, [doc_id])
                 else:
-                    # Добавляем новую запись
+                    # Adding new record
                     embedding = get_embeddings(rec["text"])
                     doc_ids = insert_records(cursor, pd.DataFrame([rec]))
                     recs_added += 1

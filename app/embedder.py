@@ -1,7 +1,7 @@
 import numpy as np
-from transformers import AutoTokenizer, AutoModel
 import torch
 import tqdm
+from transformers import AutoTokenizer, AutoModel
 
 from configs import load_config
 

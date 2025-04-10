@@ -13,3 +13,4 @@ docs/~WRL3959.tmp
 pgadmin-data
 *.pyc
 .env
+~$*

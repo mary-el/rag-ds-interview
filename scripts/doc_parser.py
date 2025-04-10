@@ -1,8 +1,8 @@
-from docx import Document
-import pandas as pd
-import glob
 import os
+
+import pandas as pd
 import tqdm
+from docx import Document
 
 
 def parse_documents(file):
@@ -29,6 +29,8 @@ def parse_documents(file):
         else:
             current_answer += par.text + '\n'
     answers.append(current_answer)
-    qa_dataset = pd.DataFrame({'section': [section,] * len(subsections), 'subsection': subsections, 'question': questions, 'answer': answers})
+    qa_dataset = pd.DataFrame(
+        {'section': [section, ] * len(subsections), 'subsection': subsections, 'question': questions,
+         'answer': answers})
     qa_dataset['text'] = qa_dataset[['section', 'subsection', 'question', 'answer']].agg('\n'.join, axis=1)
     return qa_dataset
