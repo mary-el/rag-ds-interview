@@ -5,16 +5,22 @@ import faiss
 from configs import load_config
 
 faiss_index = None
+config = load_config()
 
 
-def get_faiss_index():
+def create_faiss_index() -> faiss.Index:
+    global faiss_index
+    faiss_index = faiss.IndexIDMap(faiss.IndexFlatL2(config['embedding']['dim']))
+    return faiss_index
+
+
+def get_faiss_index() -> faiss.Index:
     global faiss_index
     if faiss_index is None:
-        config = load_config()
         if os.path.exists(config['faiss']['index_path']):
             faiss_index = faiss.read_index(config['faiss']['index_path'])
         else:
-            faiss_index = faiss.IndexIDMap(faiss.IndexFlatL2(config['embedding']['dim']))
+            faiss_index = create_faiss_index()
     return faiss_index
 
 
@@ -30,4 +36,5 @@ def search_index(query_embedding, top_k: int):
 
 
 def add_with_ids(embeddings, doc_ids):
+    faiss_index = get_faiss_index()
     faiss_index.add_with_ids(embeddings, doc_ids)

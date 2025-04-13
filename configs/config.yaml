@@ -10,3 +10,13 @@ doc_parsing:
   input_dir: "data/docs"
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
+llm:
+  provider: "huggingface"  # openai, huggingface, local
+  model_name: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+  temperature: 0.7
+  top_p: 0.95
+  base_url: "http://localhost:8000"  # for local inference
+  template_files: {
+                    'qa': 'qa_template.txt',
+                    'quiz': 'quiz_template.txt'
+  }

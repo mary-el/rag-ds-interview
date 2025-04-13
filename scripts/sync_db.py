@@ -8,7 +8,7 @@ from app import get_connection, get_faiss_index
 from app.embedder import get_embeddings
 from configs import load_config
 from scripts.doc_parser import parse_documents
-from scripts.utils import hash_text, insert_records, update_record
+from app.utils import hash_text, insert_records, update_record
 
 
 def sync_db():

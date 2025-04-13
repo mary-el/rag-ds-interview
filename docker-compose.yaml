@@ -23,7 +23,7 @@ services:
     volumes:
       - type: bind
         source: ./ds-data
-        target: /var/lib/postgresql/data
+        target: /pgdata
       - ./init:/docker-entrypoint-initdb.d   # DB initialization
     ports:
       - "${DB_PORT}:5432"

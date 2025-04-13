@@ -1,7 +1,7 @@
 import pandas as pd
 import psycopg2
 
-from configs import DB_CONFIG
+from configs import CONFIG
 
 conn = None
 
@@ -9,9 +9,9 @@ conn = None
 def get_connection():
     global conn
     if conn is None:
-        conn = psycopg2.connect(dbname=DB_CONFIG['dbname'], user=DB_CONFIG['user'], password=DB_CONFIG['password'],
-                                host=DB_CONFIG['host'])
-        print(f'Connected to {DB_CONFIG["dbname"]}')
+        conn = psycopg2.connect(dbname=CONFIG['dbname'], user=CONFIG['user'], password=CONFIG['password'],
+                                host=CONFIG['host'])
+        print(f'Connected to {CONFIG["dbname"]}')
     return conn
 
 

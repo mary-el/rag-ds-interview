@@ -1,11 +1,5 @@
 .ipynb_checkpoints/
 rag.py
-docs/~$assical_models.docx
-docs/~$atistics.docx
-docs/~$ep Learning.docx
-docs/~$ftware.docx
-docs/~$LLM.docx
-docs/~$NLP.docx
 docs/~WRL3959.tmp
 .idea/
 *.tmp
@@ -14,3 +8,5 @@ pgadmin-data
 *.pyc
 .env
 ~$*
+__pycache__/
+ds-data/
