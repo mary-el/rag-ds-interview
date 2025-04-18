@@ -1,5 +1,5 @@
-from app.llm.providers import LocalClient, OpenAIClient, HuggingFaceClient
 from app.llm.base import LLMInterface
+from app.llm.providers import HuggingFaceClient, LocalClient, OpenAICompatibleClient
 
 
 def get_llm_client(config) -> LLMInterface:
@@ -7,7 +7,7 @@ def get_llm_client(config) -> LLMInterface:
     params = config["llm"]
 
     if provider == "openai":
-        return OpenAIClient(**params)
+        return OpenAICompatibleClient(**params)
     elif provider == "huggingface":
         return HuggingFaceClient(**params)
     elif provider == "local":

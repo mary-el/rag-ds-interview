@@ -6,9 +6,9 @@ import tqdm
 
 from app import get_connection, get_faiss_index
 from app.embedder import get_embeddings
+from app.utils import hash_text, insert_records, update_record
 from configs import load_config
 from scripts.doc_parser import parse_documents
-from app.utils import hash_text, insert_records, update_record
 
 
 def sync_db():
@@ -17,7 +17,10 @@ def sync_db():
     """
     conn = get_connection()
     config = load_config()
-    doc_files = [Path(config['doc_parsing']['input_dir']) / doc for doc in config['doc_parsing']['files']]
+    doc_files = [
+        Path(config["doc_parsing"]["input_dir"]) / doc
+        for doc in config["doc_parsing"]["files"]
+    ]
     faiss_index = get_faiss_index()
     recs_updated = 0
     recs_added = 0
@@ -25,10 +28,13 @@ def sync_db():
         for doc_path in doc_files:
             records = parse_documents(doc_path)
             for i, rec in tqdm.tqdm(records.iterrows()):
-                new_hash = hash_text(rec['text'])
-                cursor.execute("SELECT id, hash_answer FROM ds_qa WHERE section = %s "
-                               "AND subsection = %s "
-                               "AND question = %s", (rec['section'], rec['subsection'], rec['question']))
+                new_hash = hash_text(rec["text"])
+                cursor.execute(
+                    "SELECT id, hash_answer FROM ds_qa WHERE section = %s "
+                    "AND subsection = %s "
+                    "AND question = %s",
+                    (rec["section"], rec["subsection"], rec["question"]),
+                )
                 row = cursor.fetchone()
                 if row:
                     doc_id, existing_hash = row
@@ -41,11 +47,14 @@ def sync_db():
                         faiss_index.add_with_ids(embedding, [doc_id])
                 else:
                     # Adding new record
-                    embedding = get_embeddings(rec["text"])
+                    embedding = get_embeddings([rec["text"]])
                     doc_ids = insert_records(cursor, pd.DataFrame([rec]))
                     recs_added += 1
                     faiss_index.add_with_ids(embedding, doc_ids)
-    print(f'''DB synced
+    conn.commit()
+    print(
+        f"""DB synced
 {recs_updated} records updated
 {recs_added} records added
-''')
+"""
+    )

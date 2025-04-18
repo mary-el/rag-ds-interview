@@ -1,6 +1,14 @@
 embedding:
+#  model: "deepseek-ai/DeepSeek-V3-0324"
   model: "sentence-transformers/all-MiniLM-L6-v2"
   dim: 384
+
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  dbname: ${DB_NAME}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
 
 faiss:
   index_path: "indexes/faiss.index"
@@ -11,12 +19,15 @@ doc_parsing:
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
 llm:
-  provider: "huggingface"  # openai, huggingface, local
-  model_name: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+  provider: "openai"  # openai, huggingface, local
+  model_name: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+  api_key: ${API_KEY}
+#  model_name: "mistralai/Mixtral-8x7B-Instruct-v0.1"
   temperature: 0.7
   top_p: 0.95
-  base_url: "http://localhost:8000"  # for local inference
+  base_url: "https://api.together.xyz"  # for local inference
   template_files: {
                     'qa': 'qa_template.txt',
                     'quiz': 'quiz_template.txt'
   }
+  max_tokens: 512

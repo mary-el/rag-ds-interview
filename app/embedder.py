@@ -1,7 +1,6 @@
 import numpy as np
 import torch
-import tqdm
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoModel, AutoTokenizer
 
 from configs import load_config
 
@@ -9,8 +8,8 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 
 
 def get_embedding_model(model_ckpt):
-    tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
-    model = AutoModel.from_pretrained(model_ckpt)
+    tokenizer = AutoTokenizer.from_pretrained(model_ckpt, trust_remote_code=True)
+    model = AutoModel.from_pretrained(model_ckpt, trust_remote_code=True)
     return model, tokenizer
 
 
@@ -21,10 +20,10 @@ def cls_pooling(model_output):
 @torch.no_grad()
 def get_embeddings(text_list, batch_size=64):
     config = load_config()
-    model, tokenizer = get_embedding_model(config['embedding']['model'])
+    model, tokenizer = get_embedding_model(config["embedding"]["model"])
     embeddings = []
     for i in range(0, len(text_list), batch_size):
-        batch_texts = text_list[i: i + batch_size]
+        batch_texts = text_list[i : i + batch_size]
         encoded_input = tokenizer(
             batch_texts, padding=True, truncation=True, return_tensors="pt"
         )

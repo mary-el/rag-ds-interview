@@ -1,12 +1,13 @@
 import os
 
 from app.rag import rag_pipeline
-from scripts import load_records_to_db_and_faiss
+from scripts import load_records_to_db_and_faiss, sync_db
 
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
 if __name__ == "__main__":
-    load_records_to_db_and_faiss()
+    if load_records_to_db_and_faiss():
+        sync_db()
 
     while True:
         query = input("\nEnter your question: ")
