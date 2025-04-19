@@ -11,9 +11,9 @@ from scripts.doc_parser import parse_documents
 def load_records_to_db_and_faiss() -> bool:
     conn = get_connection()
     config = load_config()
-
-    with conn.cursor() as cursor:
-        if not is_db_empty(cursor):  # data is already loaded in db
+    recs_added = 0
+    with conn:
+        if not is_db_empty(conn):  # data is already loaded in db
             return True
 
         create_faiss_index()
@@ -27,10 +27,12 @@ def load_records_to_db_and_faiss() -> bool:
             print("Getting Embeddings")
             embeddings = get_embeddings(records["text"].tolist())
             print("Adding data to DB")
-            doc_ids = insert_records(cursor, records)
+            doc_ids = insert_records(conn, records)
             add_with_ids(embeddings, doc_ids)
-    conn.commit()
-    save_index()
+            recs_added += len(records)
+        save_index()
+
+    print(f"{recs_added} records added")
     return False
 
 

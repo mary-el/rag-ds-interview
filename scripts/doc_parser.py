@@ -4,6 +4,8 @@ import pandas as pd
 import tqdm
 from docx import Document
 
+from app.utils import hash_text
+
 
 def parse_documents(file):
     subsections = []
@@ -43,4 +45,5 @@ def parse_documents(file):
     qa_dataset["text"] = qa_dataset[
         ["section", "subsection", "question", "answer"]
     ].agg("\n".join, axis=1)
+    qa_dataset["hash_answer"] = qa_dataset["answer"].map(hash_text)
     return qa_dataset
