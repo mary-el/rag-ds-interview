@@ -23,20 +23,20 @@ def get_templates(root: Path = Path("configs/templates")) -> Dict[Mode, str]:
     return templates
 
 
-def build_prompt(query: str, context: str, mode: Mode):
+def build_prompt(fields: Dict[str, str], mode: Mode):
 
     prompt_template = get_templates()[mode].strip()
-    prompt = prompt_template.format(question=query, context=context).strip()
+    prompt = prompt_template.format(**fields).strip()
     return prompt
 
 
-def generate_answer(question: str, context: str) -> str:
+def generate_text(fields: Dict[str, str], mode: Mode) -> str:
     """
     Work in progress
     :param question: User question
     :param context: Context string
     :return: Model answer
     """
-    prompt = build_prompt(question, context, mode=Mode.QA)
+    prompt = build_prompt(fields, mode=mode)
     result = llm.generate(prompt)
     return result

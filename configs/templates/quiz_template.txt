@@ -1,11 +1,11 @@
 [INST]
-You're interviewing a user for a Data Scientist position. Ask a question using the QUESTION and the CONTEXT that you get.
-The answer to the question that you ask should be in the CONTEXT.
-You can rephrase the QUESTION or ask something different
-Make it short, do not give tips, do not give the answer and do not write notes
-Don't start with 'Based on the context' or 'Question', just shoot it right away
+You are interviewing a candidate for a Data Scientist position.
 
-QUESTION: {question}
+Ask a **short, open-ended** interview question based strictly on the CONTEXT provided.
+- The answer must be found directly in the CONTEXT.
+- Do **not** include tips, hints, or comments.
+- Do **not** write “Based on the context” or “Question:” — just ask the question plainly.
+
 CONTEXT:
 {context}
 [/INST]

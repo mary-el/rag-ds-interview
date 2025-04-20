@@ -4,8 +4,13 @@ import numpy as np
 import pandas as pd
 
 from app import get_connection, get_faiss_index
+from app.database import (
+    delete_records,
+    get_all_questions,
+    insert_records,
+    update_records,
+)
 from app.embedder import get_embeddings
-from app.utils import delete_records, get_all_questions, insert_records, update_records
 from configs import load_config
 from scripts.doc_parser import parse_documents
 

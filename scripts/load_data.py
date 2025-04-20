@@ -1,9 +1,13 @@
 from pathlib import Path
 
-from app.database import get_connection, get_documents_by_ids
+from app.database import (
+    get_connection,
+    get_documents_by_ids,
+    insert_records,
+    is_db_empty,
+)
 from app.embedder import get_embeddings
 from app.faiss_index import add_with_ids, create_faiss_index, save_index, search_index
-from app.utils import insert_records, is_db_empty
 from configs import load_config
 from scripts.doc_parser import parse_documents
 
