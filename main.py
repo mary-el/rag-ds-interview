@@ -10,9 +10,10 @@ if __name__ == "__main__":
         sync_db()
 
     while True:
-        query = input("\nEnter your question: ")
+        query = input("\nEnter your question: ").strip()
         if query.lower() in {"exit", "quit"}:
             break
-
+        if len(query) == 0:
+            continue
         answer = rag_pipeline(query)
         print(f"\n💡 Answer:\n{answer}")

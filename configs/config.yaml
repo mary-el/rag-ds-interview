@@ -19,10 +19,11 @@ doc_parsing:
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
 llm:
-  provider: "openai"  # openai, huggingface, local
-  model_name: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
-  api_key: ${API_KEY}
+  provider: "local"  # openai, local
+#  model_name: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 #  model_name: "mistralai/Mixtral-8x7B-Instruct-v0.1"
+  model_name: "Qwen/Qwen2-0.5B"
+  api_key: ${API_KEY}
   temperature: 0.7
   top_p: 0.95
   base_url: "https://api.together.xyz"  # for local inference
@@ -31,3 +32,6 @@ llm:
                     'quiz': 'quiz_template.txt'
   }
   max_tokens: 512
+  do_sample: True
+  num_beams: 1
+  device: cuda

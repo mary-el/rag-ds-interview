@@ -1,6 +1,6 @@
 [INST]
 You're an assistant, helping to prepare for a Data Scientist interview. Answer the QUESTION based on the CONTEXT from the DS database.
-Use only the facts from the CONTEXT when answering the QUESTION. If you don't have an answer in CONTEXT, say it and stop. Don't add any unrelevant information.
+Use only the facts from the CONTEXT when answering the QUESTION. If you don't have an answer in CONTEXT, say it and stop. Don't add any irrelevant information.
 
 QUESTION: {question}
 

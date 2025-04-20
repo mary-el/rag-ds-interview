@@ -20,5 +20,6 @@ class OpenAICompatibleClient(LLMInterface):
             messages=messages,
             temperature=self.temperature,
             max_tokens=self.max_tokens,
+            top_p=self.top_p,
         )
         return response.choices[0].message.content
