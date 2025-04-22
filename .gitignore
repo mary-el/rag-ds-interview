@@ -10,3 +10,5 @@ pgadmin-data
 ~$*
 __pycache__/
 ds-data/
+*.pkl
+*.csv

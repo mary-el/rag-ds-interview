@@ -4,7 +4,9 @@ You are interviewing a candidate for a Data Scientist position.
 Ask a **short, open-ended** interview question based strictly on the CONTEXT provided.
 - The answer must be found directly in the CONTEXT.
 - Do **not** include tips, hints, or comments.
-- Do **not** write “Based on the context” or “Question:” — just ask the question plainly.
+- Do **not** write “Based on the context” or “Question:” — just ask the question.
+- Use ?
+
 
 CONTEXT:
 {context}
