@@ -35,3 +35,5 @@ llm:
   do_sample: True
   num_beams: 1
   device: cuda
+interface:
+  telegram_token: ${TELEGRAM_TOKEN}
