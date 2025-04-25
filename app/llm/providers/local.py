@@ -1,10 +1,9 @@
-import logging
-
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from app.llm.base import LLMInterface
+from app.logger import setup_logger
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 
 def move_to_device(d, device):

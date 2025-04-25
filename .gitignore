@@ -12,3 +12,4 @@ __pycache__/
 ds-data/
 *.pkl
 *.csv
+*.log

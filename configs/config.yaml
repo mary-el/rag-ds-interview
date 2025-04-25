@@ -1,5 +1,4 @@
 embedding:
-#  model: "deepseek-ai/DeepSeek-V3-0324"
   model: "sentence-transformers/all-MiniLM-L6-v2"
   dim: 384
 
@@ -18,6 +17,7 @@ doc_parsing:
   input_dir: "data/docs"
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
+
 llm:
   provider: "openai"  # openai, local
   model_name: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
@@ -35,5 +35,10 @@ llm:
   do_sample: True
   num_beams: 1
   device: cuda
+
 interface:
   telegram_token: ${TELEGRAM_TOKEN}
+
+app:
+  log_file: app.log
+  stream_log: False

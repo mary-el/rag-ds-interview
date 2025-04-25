@@ -2,7 +2,10 @@ from app.database import get_documents_by_ids
 from app.embedder import get_embeddings
 from app.faiss_index import search_index
 from app.generator import generate_text
+from app.logger import setup_logger
 from app.utils import Mode, get_context
+
+logger = setup_logger(__name__)
 
 
 def rag_pipeline(question: str, context: str = None, top_k: int = 5) -> str:
@@ -33,4 +36,5 @@ def rag_pipeline(question: str, context: str = None, top_k: int = 5) -> str:
 
         return answer
     except Exception as e:
+        logger.error(f"Exception occurred: {e}")
         return f"Exception occurred: {e}"

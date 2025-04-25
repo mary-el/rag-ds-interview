@@ -4,15 +4,18 @@ import pandas as pd
 import tqdm
 from docx import Document
 
+from app.logger import setup_logger
 from app.utils import hash_text
 
+logger = setup_logger(__name__)
 
-def parse_documents(file):
+
+def parse_documents(file: str) -> pd.DataFrame:
     subsections = []
     questions = []
     answers = []
     section = os.path.basename(file)[:-5].replace("_", " ")  # name of the section
-    print(f"Parsing Section {section}")
+    logger.info(f"Parsing Section {section}")
     doc = Document(file)
     current_answer = ""
     current_subsection = None

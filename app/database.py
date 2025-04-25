@@ -2,10 +2,11 @@ import pandas as pd
 import psycopg2
 from psycopg2.extras import execute_values
 
-from app.utils import logger
+from app.logger import setup_logger
 from configs import load_config
 
 conn = None
+logger = setup_logger(__name__)
 
 
 def get_connection():
@@ -18,7 +19,7 @@ def get_connection():
             password=config_db["password"],
             host=config_db["host"],
         )
-        print(f'Connected to {config_db["dbname"]}')
+        logger.info(f'Connected to {config_db["dbname"]}')
     return conn
 
 

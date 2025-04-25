@@ -11,29 +11,37 @@ from app.database import (
     update_records,
 )
 from app.embedder import get_embeddings
+from app.logger import setup_logger
 from configs import load_config
 from scripts.doc_parser import parse_documents
+
+logger = setup_logger(__name__)
 
 
 def sync_db():
     """
     Synchronize database with documents
     """
+    logger.info("Syncing db")
     conn = get_connection()
     config = load_config()
+
     doc_files = [
         Path(config["doc_parsing"]["input_dir"]) / doc
         for doc in config["doc_parsing"]["files"]
     ]
     faiss_index = get_faiss_index()
+
     recs_updated = 0
     recs_added = 0
     recs_deleted = 0
+
     with conn:
-        for doc_path in doc_files:
+        for doc_path in doc_files:  # parsing files
             df_parsed = parse_documents(doc_path)
             section = df_parsed["section"][0]
-            df_db = get_all_questions(conn, section)
+            df_db = get_all_questions(conn, section)  # loading section from db
+
             df_merged = pd.merge(
                 df_parsed,
                 df_db,
@@ -41,11 +49,13 @@ def sync_db():
                 how="outer",
                 suffixes=("", "_db"),
             )
+
             df_deleted = df_merged[df_merged["answer"].isna()]  # deleted records
             df_added = df_merged[df_merged["answer_db"].isna()]  # new records
             df_updated = df_merged[
                 df_merged["hash_answer"] != df_merged["hash_answer_db"]
             ].dropna()  # updated records
+
             if len(df_deleted):
                 doc_ids = df_deleted["id"].tolist()
                 delete_records(conn, doc_ids)
@@ -65,10 +75,7 @@ def sync_db():
                 faiss_index.remove_ids(np.array(doc_ids))
                 faiss_index.add_with_ids(embeddings, doc_ids)
                 recs_updated += len(df_updated)
-    print(
-        f"""DB synced
-{recs_updated} records updated
-{recs_added} records added
-{recs_deleted} records delected
-"""
+
+    logger.info(
+        f"""DB synced; {recs_updated} records updated, {recs_added} records added, {recs_deleted} records delected"""
     )

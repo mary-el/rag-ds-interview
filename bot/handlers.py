@@ -12,9 +12,12 @@ from telegram.ext import (
 )
 
 from app.database import get_all_sections
+from app.logger import setup_logger
 from app.quiz import quiz_pipeline
 from app.rag import rag_pipeline
 from configs import load_config
+
+logger = setup_logger(__name__)
 
 
 class State(Enum):
@@ -98,5 +101,5 @@ def run_bot():
     )
 
     app.add_handler(conv_handler)
-    print("🤖 I am on!")
+    logger.info("Starting polling")
     app.run_polling()

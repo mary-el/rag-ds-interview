@@ -1,10 +1,7 @@
 import hashlib
-import logging
 from enum import Enum
 
 import pandas as pd
-
-logger = logging.getLogger(__name__)
 
 
 class Mode(Enum):
