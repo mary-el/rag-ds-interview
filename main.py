@@ -16,7 +16,7 @@ if __name__ == "__main__":
         "--sync", "-s", help="synchronize db with docs", action="store_true"
     )
     args = parser.parse_args()
-    logger.info("App started")
+    logger.info("APP STARTED")
 
     if load_records_to_db_and_faiss() and args.sync:
         sync_db()
@@ -24,21 +24,21 @@ if __name__ == "__main__":
     current_context = None
 
     print("Write 'quiz' to enter quiz mode")
-    logger.info("Entering main loop")
+    logger.info("ENTERING MAIN LOOP")
 
     while True:
-        query = input("\nEnter your question: ").strip().lower()
+        query = input("\nEnter your question: ").strip()
 
         if len(query) == 0:
             continue
-        logger.info(f"User's query: {query}")
+        logger.info(f"USER'S QUERY: {query}")
 
-        if query in {"exit", "quit"}:
-            logger.info("Exiting")
+        if query.lower() in {"exit", "quit"}:
+            logger.info("EXITING")
             break
 
-        if query in {"quiz", "question"}:  # quiz mode
-            logger.info("User selected quiz mode")
+        if query.lower() in {"quiz", "question"}:  # quiz mode
+            logger.info("QUIZ MODE")
             sections = get_all_sections()
             section_list = " ".join(
                 (f"{i}. {section}" for i, section in enumerate(sections, 1))
@@ -49,21 +49,21 @@ if __name__ == "__main__":
                 print("Wrong number")
                 continue
             section = sections[section_n - 1]
-            logger.info(f"User selected section {section}")
+            logger.info(f"SECTION {section}")
             quiz_question, context = quiz_pipeline(section)
 
             print(f"\n❓ Question:\n{quiz_question}")
             print(f'Write "answer" if you want to know the answer\n')
-            logger.info(f"Model question: {quiz_question}")
+            logger.info(f"MODEL QUESTION: {quiz_question}")
 
             continue
 
-        if query in {"answer"} and quiz_question:
+        if query.lower() in {"answer"} and quiz_question:
             query = quiz_question
             current_context = context
 
         answer = rag_pipeline(query, current_context)
         print(f"\n💡 Answer:\n{answer}")
-        logger.info(f"Model answer: {answer}")
+        logger.info(f"MODEL ANSWER: {answer}")
         quiz_question = None
         current_context = None
