@@ -10,7 +10,7 @@ config = load_config()
 
 def create_faiss_index() -> faiss.Index:
     global faiss_index
-    faiss_index = faiss.IndexIDMap(faiss.IndexFlatL2(config["embedding"]["dim"]))
+    faiss_index = faiss.IndexIDMap(faiss.IndexFlatL2(config["faiss"]["dim"]))
     return faiss_index
 
 

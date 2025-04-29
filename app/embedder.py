@@ -20,7 +20,7 @@ def cls_pooling(model_output):
 @torch.no_grad()
 def get_embeddings(text_list, batch_size=64):
     config = load_config()
-    model, tokenizer = get_embedding_model(config["embedding"]["model"])
+    model, tokenizer = get_embedding_model(config["faiss"]["model"])
     embeddings = []
     for i in range(0, len(text_list), batch_size):
         batch_texts = text_list[i : i + batch_size]

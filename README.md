@@ -1,20 +1,98 @@
-# Retrieval Augmented Generation System for Data Science interview preparation with Python, Elasticsearch & LLMs
+# Data Sience Assistant
 
-Welcome to my GitHub repository where I've developed a system that leverages the power of Large Language Models (LLMs) for data science learning and quizzing. My project aims at making complex topics more digestible through interactive dialogue.
+Welcome to my GitHub repository where I've developed a system that uses Large Language Models (LLMs) for data science learning and quizzing. My project aims at making complex topics more digestible through interactive dialogue.
 I was preparing for a data scientist interview, so I've collected a lot of materials to study, but it was hard to navigate through it. I am intersted in LLMs, so I've created a Python project in which I use Retrieval Augmented Generation to help me. 
 
-## Project Overview 
-Inspired by the transformative potential LLMs have in understanding and generating human-like text responses from massive datasets, my project implements a RAG system to answer queries about Data Science concepts. This approach not only helps users learn efficiently but also keeps them engaged through quizzes!
+---
 
-## Tech Stack 
-- **Python**
-- **Elasticsearch**
-- **Huggingface Mixtral-8x7B**
+## Overview
+DS Assistant is a lightweight system for helping users prepare for Data Science interviews.  
+It supports two main modes:
+- **RAG (Retrieval-Augmented Generation):** Answer user queries based on a database of materials.
+- **Quiz Mode:** Generate open-ended questions from selected sections of the database for practice.
 
-## Steps
-- [Prepare data](https://github.com/mary-el/rag-ds-interview/blob/main/data_preparation.ipynb)
-- docker compose up
-- [RAG](https://github.com/mary-el/rag-ds-interview/blob/main/rag.ipynb)
+The project includes a CLI interface and a Telegram bot.
+
+---
+
+## Features
+- Contextual answering using local knowledge base
+- Local LLM deploy and OpenAI API support
+- Interactive quiz generation
+- Database synchronization from documents
+- Fast FAISS-based search
+- Telegram bot integration for remote usage
+
+---
+
+## Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/mary-el/rag-ds-interview.git
+   cd rag-ds-interview
+   ```
+
+2. Create and activate a virtual environment:
+   ```bash
+   conda create -n ds-assistant python=3.10
+   conda activate ds-assistant
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Create a `.env` file with the following variables:
+   ```
+   DB_HOST=you_database_host
+   DB_PORT=db_port
+   DB_NAME=db_name
+   DB_USER=db_user_name
+   DB_PASSWORD=db_password
+   TELEGRAM_BOT_TOKEN=your_telegram_token
+   API_KEY=key_for_LLM_api
+   ```
+5. Set configuration in `configs/config.yaml`
+---
+
+## Running
+
+**CLI Mode:**
+```bash
+python main.py
+```
+
+**Telegram Bot:**
+```bash
+python bot/main.py
+```
+
+---
+
+## Project Structure
+```
+app/
+├── llm/             # LLM providers
+bot/                 # Telegram bot
+scripts/             # Utilities for data loading and database sync
+configs              # Config files
+data                 # Knowledge base documents
+init                 # DB init file
+main.py              # CLI entry point
+```
+
+---
+
+## Requirements
+- Python 3.10+
+- FAISS
+- OpenAI API (if external LLMs are used)
+- PyTorch or Huggingface Transformers
+
+---
+
 
 ## Data Sections
 - [Classical ML](https://github.com/mary-el/rag-ds-interview/blob/main/docs/Classical_models/Classical_models.md)
@@ -25,9 +103,9 @@ Inspired by the transformative potential LLMs have in understanding and generati
 - [Classical NLP](https://github.com/mary-el/rag-ds-interview/tree/main/docs/Classical_NLP/Classical_NLP.md)
 - [LLM](https://github.com/mary-el/rag-ds-interview/tree/main/docs/LLM/LLM.md)
 
-## Next:
-- **More Sections**
-- **Telegram Bot API**
+---
+
+
 
 ## Acknowledgments
-I would like to thank for the course on building a Q&A system [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)
+I would like to thank for the courses on LLMs [DeepSchool](https://deepschool.ru/llm) and [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp)
