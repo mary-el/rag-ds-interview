@@ -10,3 +10,7 @@ pgvector
 dotenv
 openai
 psycopg2
+pytz
+urllib3
+transformers
+accelerate

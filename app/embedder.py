@@ -9,7 +9,7 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 
 def get_embedding_model(model_ckpt):
     tokenizer = AutoTokenizer.from_pretrained(model_ckpt, trust_remote_code=True)
-    model = AutoModel.from_pretrained(model_ckpt, trust_remote_code=True)
+    model = AutoModel.from_pretrained(model_ckpt, trust_remote_code=True).to(device)
     return model, tokenizer
 
 
@@ -29,5 +29,5 @@ def get_embeddings(text_list, batch_size=64):
         )
         encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
         model_output = model(**encoded_input)
-        embeddings.append(cls_pooling(model_output).detach().numpy())
+        embeddings.append(cls_pooling(model_output).cpu().detach().numpy())
     return np.concatenate(embeddings)

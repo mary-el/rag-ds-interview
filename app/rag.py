@@ -8,7 +8,7 @@ from app.utils import Mode, get_context
 logger = setup_logger(__name__)
 
 
-def rag_pipeline(question: str, context: str = None, top_k: int = 5) -> str:
+def rag_pipeline(question: str, context: str = None) -> str:
     """
     Retrieval-Augmented Generation pipeline
 
@@ -22,7 +22,7 @@ def rag_pipeline(question: str, context: str = None, top_k: int = 5) -> str:
             query_embedding = get_embeddings([question])
 
             # 2. Searching for the relevant documents
-            doc_ids, scores = search_index(query_embedding, top_k=top_k)
+            doc_ids, scores = search_index(query_embedding)
 
             if len(doc_ids) == 0:
                 return "No relevant documents found"

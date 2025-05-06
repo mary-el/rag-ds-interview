@@ -18,6 +18,7 @@ def setup_logger(name: str) -> logging.Logger:
 
         file_handler = logging.FileHandler(log_file)
         file_handler.setFormatter(formatter)
+        file_handler.encoding = "utf-8"
         logger.addHandler(file_handler)
 
         if config["stream_log"]:
