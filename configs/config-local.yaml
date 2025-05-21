@@ -10,7 +10,7 @@ faiss:
   distance: "l2"
   model: "sentence-transformers/all-MiniLM-L6-v2"  # faiss embedding model
   dim: 384
-  records_num: 5                                   # number of records for RAG to use
+  records_num: 3                                   # number of records for RAG to use
 
 doc_parsing:                                      # knowledge base settings
   input_dir: "data/docs"
@@ -18,8 +18,8 @@ doc_parsing:                                      # knowledge base settings
          'Metrics.docx', 'Probability_and_Statistics.docx']
 
 llm:
-  provider: "openai"                              # openai, local
-  model_name: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+  provider: "local"                              # openai, local
+  model_name: "google/gemma-2-2b-it"
   api_key: ${API_KEY}
   temperature: 0.7
   top_p: 0.95
@@ -30,7 +30,7 @@ llm:
                     'qa': 'qa_template_gemma.txt',
                     'quiz': 'quiz_template_gemma.txt'
   }
-  max_tokens: 1024
+  max_tokens: 512
   do_sample: True
   num_beams: 1
   device: cuda                                  # for local inference

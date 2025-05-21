@@ -14,3 +14,4 @@ pytz
 urllib3
 transformers
 accelerate
+python-telegram-bot

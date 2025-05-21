@@ -5,9 +5,11 @@ import yaml
 _config = None
 
 
-def load_config(path="configs/config.yaml") -> dict:
+def load_config(path=None) -> dict:
     global _config
     if _config is None:
+        if path is None:
+            raise ValueError("Config is not initizlized")
         with open(path, "r") as f:
             raw = f.read()
         raw = os.path.expandvars(raw)  # loading env variables
