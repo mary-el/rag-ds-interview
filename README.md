@@ -61,12 +61,14 @@ The project includes a CLI interface and a Telegram bot.
 
 **CLI Mode:**
 ```bash
-python main.py
-```
+python main.py [-h] [--sync] [--config CONFIG] [--bot]
 
-**Telegram Bot:**
-```bash
-python bot/main.py
+options:
+  -h, --help            show this help message and exit
+  --sync, -s            synchronize db with docs
+  --config CONFIG, -c CONFIG
+                        config file
+  --bot, -b             run telegram bot
 ```
 
 ---

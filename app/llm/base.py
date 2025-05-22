@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from app.logger import setup_logger
 
 logger = setup_logger(__name__)
@@ -17,7 +18,7 @@ class LLMInterface(ABC):
         top_p: float = 1.0,
         top_k: int = 50,
         repetition_penalty: int = 1,
-        **kwargs
+        **kwargs,
     ):
         self.model_name = model_name
         self.base_url = base_url
@@ -30,7 +31,7 @@ class LLMInterface(ABC):
         self.top_k = top_k
         self.repetition_penalty = repetition_penalty
 
-        logger.info(f'Using LLM {model_name}')
+        logger.info(f"Using LLM {model_name}")
 
     @abstractmethod
     def generate(self, prompt: str) -> str:

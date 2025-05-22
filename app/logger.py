@@ -7,6 +7,7 @@ from configs import load_config
 
 logger = None
 
+
 def setup_logger(name: str) -> logging.Logger:
     config = load_config()["app"]
     global logger
@@ -15,7 +16,7 @@ def setup_logger(name: str) -> logging.Logger:
     logger = logging.getLogger(name)
     log_folder = Path(config["log_folder"])
     os.makedirs(log_folder, exist_ok=True)
-    filename = time.strftime("%Y-%m-%d-%H-%M-%S") + '.log'
+    filename = time.strftime("%Y-%m-%d-%H-%M-%S") + ".log"
     log_file = str(log_folder / filename)
 
     if not logger.hasHandlers():
