@@ -1,0 +1,43 @@
+db:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  dbname: ${DB_NAME}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
+
+faiss:
+  index_path: "faiss.index"
+  distance: "l2"
+  model: "sentence-transformers/all-MiniLM-L6-v2"  # faiss embedding model
+  dim: 384
+  records_num: 3                                   # number of records for RAG to use
+
+doc_parsing:                                      # knowledge base settings
+  input_dir: "data/docs"
+  files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
+         'Metrics.docx', 'Probability_and_Statistics.docx']
+
+llm:
+  provider: "openai"                              # openai, local
+  model_name: "unsloth/gemma-2b-it"
+  api_key: sk-fake-key
+  temperature: 0.7
+  top_p: 0.95
+  top_k: 20
+  repetition_penalty: 1.2
+  base_url: "http://localhost:8000/v1"            # for openai inference
+  template_files: {
+                    'qa': 'qa_template_gemma.txt',
+                    'quiz': 'quiz_template_gemma.txt'
+  }
+  max_tokens: 512
+  do_sample: True
+  num_beams: 1
+  device: cuda                                  # for local inference
+
+interface:
+  telegram_token: ${TELEGRAM_TOKEN}
+
+app:
+  log_folder: logs
+  stream_log: False

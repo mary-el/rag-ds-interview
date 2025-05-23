@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-server
+    env_file: .env
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    environment:
+      - HF_HOME=/models
+    volumes:
+      - type: bind
+        source: ./models
+        target: /models
+    command: >
+      --model unsloth/gemma-2b-it
+      --max-model-len 4096
+      --download-dir /models
+volumes:
+  models:

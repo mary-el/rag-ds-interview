@@ -59,7 +59,6 @@ The project includes a CLI interface and a Telegram bot.
 
 ## Running
 
-**CLI Mode:**
 ```bash
 python main.py [-h] [--sync] [--config CONFIG] [--bot]
 

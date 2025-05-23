@@ -13,3 +13,4 @@ ds-data/
 *.pkl
 *.csv
 *.log
+vllm/models/
