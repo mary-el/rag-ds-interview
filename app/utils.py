@@ -7,6 +7,7 @@ import pandas as pd
 class Mode(Enum):
     QA = "qa"
     QUIZ = "quiz"
+    RATE = "rate"
 
 
 def hash_text(text):

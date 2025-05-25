@@ -14,13 +14,16 @@ services:
             - capabilities: [gpu]
     environment:
       - HF_HOME=/models
+      - HUGGING_FACE_HUB_TOKEN=${API_KEY}
     volumes:
       - type: bind
         source: ./models
         target: /models
     command: >
-      --model unsloth/gemma-2b-it
-      --max-model-len 4096
+      --model ${MODEL}
+      --max-model-len 3000
       --download-dir /models
+      --gpu-memory-utilization 0.95
+      --quantization awq
 volumes:
   models:

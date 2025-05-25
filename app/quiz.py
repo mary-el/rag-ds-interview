@@ -21,3 +21,14 @@ def quiz_pipeline(section: str = None):
     except Exception as e:
         logger.error(f"Exception occurred: {e}")
         return f"Exception occurred: {e}", None
+
+
+def rate_answer_pipeline(context: str, question: str, answer: str):
+    try:  # rating user's answer
+        rate = generate_text(
+            {"context": context, "question": question, "answer": answer}, mode=Mode.RATE
+        )
+        return rate
+    except Exception as e:
+        logger.error(f"Exception occurred: {e}")
+        return f"Exception occurred: {e}", None

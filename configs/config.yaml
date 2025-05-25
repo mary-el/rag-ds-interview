@@ -27,8 +27,9 @@ llm:
   repetition_penalty: 1.2
   base_url: "https://api.together.xyz"            # for openai inference
   template_files: {
-                    'qa': 'qa_template_gemma.txt',
-                    'quiz': 'quiz_template_gemma.txt'
+                    'qa': 'qa_template.txt',
+                    'quiz': 'quiz_template.txt',
+                    'rate': 'rate_answer_template.txt'
   }
   max_tokens: 1024
   do_sample: True

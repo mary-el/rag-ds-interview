@@ -19,7 +19,7 @@ doc_parsing:                                      # knowledge base settings
 
 llm:
   provider: "openai"                              # openai, local
-  model_name: "unsloth/gemma-2b-it"
+  model_name: "/models/Mistral-AWQ"
   api_key: sk-fake-key
   temperature: 0.7
   top_p: 0.95
@@ -27,8 +27,8 @@ llm:
   repetition_penalty: 1.2
   base_url: "http://localhost:8000/v1"            # for openai inference
   template_files: {
-                    'qa': 'qa_template_gemma.txt',
-                    'quiz': 'quiz_template_gemma.txt'
+                    'qa': 'qa_template.txt',
+                    'quiz': 'quiz_template.txt'
   }
   max_tokens: 512
   do_sample: True
