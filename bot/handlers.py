@@ -15,7 +15,7 @@ from telegram.warnings import PTBUserWarning
 
 from app.database import get_all_sections
 from app.logger import setup_logger
-from app.quiz import quiz_pipeline
+from app.quiz import quiz_pipeline, rate_answer_pipeline
 from app.rag import rag_pipeline
 from configs import load_config
 
@@ -24,10 +24,13 @@ filterwarnings(
 )
 logger = setup_logger(__name__)
 
+QUIT_QUIZ_MODE_MESSAGE = "Quit quiz mode"
+
 
 class State(Enum):
     READY = 1
-    QUIZ = 2
+    QUIZ_SECTION_SELECTION = 2
+    QUIZ_WAITING_ANSWER = 3
 
 
 def log_tg(update: Update, message: str):
@@ -54,18 +57,28 @@ async def handle_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log_tg(update, "QUIZ MODE")
 
     sections = get_all_sections()
+    sections.append(QUIT_QUIZ_MODE_MESSAGE)
     keyboard = [
         [InlineKeyboardButton(section, callback_data=section)] for section in sections
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    message_reply_text = "Choose the section"
+    message_reply_text = "🌈 Choose the section"
     await update.message.reply_text(message_reply_text, reply_markup=reply_markup)
-    return State.QUIZ
+    return State.QUIZ_SECTION_SELECTION
 
 
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def section_choice_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+
+    if query.data == QUIT_QUIZ_MODE_MESSAGE:  # quit quiz mode option
+        log_tg(update, "QUITTING QUIZ MODE")
+        await query.edit_message_text(
+            "Enter your question or write /quiz for a training"
+        )
+        return State.READY
+
+    await query.edit_message_text("⌛")
     log_tg(update, f"SECTION {query.data}")
 
     quiz_question, current_context = quiz_pipeline(query.data)
@@ -75,24 +88,40 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log_tg(update, f"MODEL QUESTION: {quiz_question}")
     context.user_data["quiz_question"] = quiz_question
     context.user_data["current_context"] = current_context
-    return State.READY
+    return State.QUIZ_WAITING_ANSWER
+
+
+async def handle_quiz_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    log_tg(update, "USER ANSWER")
+    text = update.message.text.strip()
+    current_context = context.user_data.get("current_context", None)
+    question = context.user_data["quiz_question"]
+
+    if text == "/answer":  # model answers the question
+        sent_message = await update.message.reply_text("⌛")
+        answer = rag_pipeline(question, current_context)
+
+        await sent_message.edit_text(f"💡 Answer:\n{answer}")
+        log_tg(update, f"MODEL ANSWER: {answer}")
+        return await handle_quiz(update, context)
+
+    sent_message = await update.message.reply_text("⌛")
+    evaluation = rate_answer_pipeline(  # user answered the question
+        context=current_context, question=question, answer=text
+    )
+    log_tg(update, f"USER ANSWER: {text}")
+    log_tg(update, f"ANSWER EVALUATION: {evaluation}")
+    await sent_message.edit_text(f"👍 {evaluation}")
+    return await handle_quiz(update, context)
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text.strip()
-    log_tg(update, f"USER'S QUERY: {text}")
+    query = update.message.text.strip()
+    log_tg(update, f"USER'S QUERY: {query}")
 
-    if text == "/answer":
-        if context.user_data["quiz_question"] is not None:
-            query = context.user_data["quiz_question"]
-        else:
-            await update.message.reply_text("You are not in /quiz mode")
-            return State.READY
-    else:
-        query = text
-
-    answer = rag_pipeline(query, context.user_data.get("current_context", None))
-    await update.message.reply_text(f"💡 Answer:\n{answer}")
+    sent_message = await update.message.reply_text("⌛")
+    answer = rag_pipeline(query, None)
+    await sent_message.edit_text(f"💡 Answer:\n{answer}")
     log_tg(update, f"MODEL ANSWER: {answer}")
 
     context.user_data["quiz_question"] = None
@@ -107,14 +136,17 @@ def run_bot():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
-            State.QUIZ: [CallbackQueryHandler(button)],
+            State.QUIZ_SECTION_SELECTION: [CallbackQueryHandler(section_choice_button)],
+            State.QUIZ_WAITING_ANSWER: [
+                MessageHandler(filters.TEXT, handle_quiz_answer)
+            ],
             State.READY: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
             ],
         },
         fallbacks=[
             CommandHandler("start", start),
-            CommandHandler("answer", handle_message),
+            # CommandHandler("answer", handle_message),
             CommandHandler("quiz", handle_quiz),
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message),
         ],

@@ -28,7 +28,9 @@ llm:
   base_url: "http://localhost:8000/v1"            # for openai inference
   template_files: {
                     'qa': 'qa_template.txt',
-                    'quiz': 'quiz_template.txt'
+                    'quiz': 'quiz_template.txt',
+                    'rate': 'rate_answer_template.txt'
+
   }
   max_tokens: 512
   do_sample: True
