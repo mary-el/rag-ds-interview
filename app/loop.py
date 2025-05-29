@@ -5,6 +5,62 @@ from app.rag import rag_pipeline
 from scripts import load_records_to_db_and_faiss, sync_db
 
 
+def quiz(sections, logger) -> bool:
+    """
+    One quiz step; returns False when user wants to quit quiz mode
+    """
+    section_list = (
+        " ".join((f"{i}. {section}" for i, section in enumerate(sections, 1)))
+        + f" {len(sections) + 1}. Quit quiz mode"
+    )
+
+    print(f"\n🌈 Available quiz sections: {section_list}\n")
+    section_n = int(input("Write a number: "))
+
+    if section_n == len(sections) + 1:
+        return False
+
+    if not 1 <= section_n <= len(sections):
+        print("Wrong number")
+        return True
+
+    section = sections[section_n - 1]
+    logger.info(f"SECTION {section}")
+
+    response = quiz_pipeline(section)
+    if not response["success"]:  # an error occured
+        print(f"💥 {response["error"]}")
+        return True
+    quiz_question, context = response["question"], response["context"]
+
+    print(f"\n❓ Question:\n{quiz_question}")
+    logger.info(f"MODEL QUESTION: {quiz_question}")
+    query = input(
+        f'Answer the question for me to rate it or write "answer" if you want to learn it\n'
+    ).strip()
+
+    if query.lower() in {"answer"}:  # user wants to know the answer
+        response = rag_pipeline(quiz_question, context)
+        if not response["success"]:  # an error occured
+            print(f"💥 {response["error"]}")
+            return True
+        answer = response["answer"]
+        print(f"\n💡 Answer:\n{answer}")
+        logger.info(f"MODEL ANSWER: {answer}")
+    else:  # user gives their answer
+        response = rate_answer_pipeline(
+            context=context, question=quiz_question, answer=query
+        )
+
+        if not response["success"]:  # an error occured
+            print(f"💥 {response["error"]}")
+            return True
+        evaluation = response["evaluation"]
+        print(f"\n👍 {evaluation}")
+        logger.info(f"ANSWER EVALUATION: {evaluation}")
+    return True
+
+
 def run_loop(synchronize: float = False):
     logger = setup_logger("main")
     logger.info("APP STARTED")
@@ -27,47 +83,16 @@ def run_loop(synchronize: float = False):
             break
 
         if query.lower() not in {"quiz", "question"}:  # user asked a question
-            answer = rag_pipeline(query)
-            print(f"\n💡 Answer:\n{answer}")
-            logger.info(f"MODEL ANSWER: {answer}")
+            response = rag_pipeline(query)
+            if response["success"]:
+                print(f"\n💡 Answer:\n{response["answer"]}")
+                logger.info(f"MODEL ANSWER: {response["answer"]}")
+            else:
+                print(f"💥 {response["error"]}")
+                continue
         else:  # quiz mode
             logger.info("QUIZ MODE")
-
             sections = get_all_sections()
-            quit_quiz_mode_opt = len(sections) + 1
-            section_list = (
-                " ".join((f"{i}. {section}" for i, section in enumerate(sections, 1)))
-                + f" {quit_quiz_mode_opt}. Quit quiz mode"
-            )
 
-            while True:
-                print(f"\n🌈 Available quiz sections: {section_list}\n")
-                section_n = int(input("Write a number: "))
-
-                if section_n == quit_quiz_mode_opt:
-                    break
-
-                if not 1 <= section_n <= len(sections):
-                    print("Wrong number")
-                    continue
-
-                section = sections[section_n - 1]
-                logger.info(f"SECTION {section}")
-                quiz_question, context = quiz_pipeline(section)
-
-                print(f"\n❓ Question:\n{quiz_question}")
-                logger.info(f"MODEL QUESTION: {quiz_question}")
-                query = input(
-                    f'Answer the question for me to rate it or write "answer" if you want to learn it\n'
-                ).strip()
-
-                if query.lower() in {"answer"}:  # user wants to know the answer
-                    answer = rag_pipeline(quiz_question, context)
-                    print(f"\n💡 Answer:\n{answer}")
-                    logger.info(f"MODEL ANSWER: {answer}")
-                else:  # user gives their answer
-                    evaluation = rate_answer_pipeline(
-                        context=context, question=quiz_question, answer=query
-                    )
-                    print(f"\n👍 {evaluation}")
-                    logger.info(f"ANSWER EVALUATION: {evaluation}")
+            while quiz(sections, logger):
+                pass

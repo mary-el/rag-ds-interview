@@ -13,4 +13,5 @@ You gave the user a QUESTION. They gave you an ANSWER. Rate their ANSWER basing 
 - The answer doesn't have to be precise
 - Don't ask more questions
 - Don't mention the context
+- Don't repeat user's answer
 [/INST]

@@ -9,4 +9,5 @@ Ask a **short, open-ended** interview question based strictly on the CONTEXT pro
 - Do **not** include tips, hints, or comments.
 - Do **not** write “Based on the context” or “Question:” — just ask the question.
 - Use ?
+- Do not mention the context; if you can't find the information, just say, that you don't know
 [/INST]

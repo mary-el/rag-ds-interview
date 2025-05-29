@@ -147,7 +147,7 @@ def get_all_sections():
             results = cursor.fetchall()
     except psycopg2.Error as e:
         logger.error("Error while reading db: %s", e)
-        raise
+        return []
     return [i[0] for i in results]
 
 

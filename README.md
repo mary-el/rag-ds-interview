@@ -9,7 +9,7 @@ I was preparing for a data scientist interview, so I've collected a lot of mater
 DS Assistant is a lightweight system for helping users prepare for Data Science interviews.  
 It supports two main modes:
 - **RAG (Retrieval-Augmented Generation):** Answer user queries based on a database of materials.
-- **Quiz Mode:** Generate open-ended questions from selected sections of the database for practice.
+- **Quiz Mode:** Generate open-ended questions from selected sections of the database for practice. Give your answer for model to rate or ask it to answer itself.
 
 The project includes a CLI interface and a Telegram bot.
 

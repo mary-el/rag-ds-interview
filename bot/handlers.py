@@ -55,6 +55,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_quiz(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log_tg(update, "QUIZ MODE")
+    context.user_data["quiz_question"] = None
+    context.user_data["current_context"] = None
 
     sections = get_all_sections()
     sections.append(QUIT_QUIZ_MODE_MESSAGE)
@@ -81,9 +83,14 @@ async def section_choice_button(update: Update, context: ContextTypes.DEFAULT_TY
     await query.edit_message_text("⌛")
     log_tg(update, f"SECTION {query.data}")
 
-    quiz_question, current_context = quiz_pipeline(query.data)
+    response = quiz_pipeline(query.data)
+    if not response["success"]:
+        await query.edit_message_text(f"💥 {response['error']}")
+        return State.READY
+
+    quiz_question, current_context = response["question"], response["context"]
     await query.edit_message_text(
-        f"❓ Question:\n{quiz_question}\n\nWrite /answer or ask a new question"
+        f"❓ Question:\n{quiz_question}\n\nAnswer the question for me to rate it or write /answer if you want to learn it"
     )
     log_tg(update, f"MODEL QUESTION: {quiz_question}")
     context.user_data["quiz_question"] = quiz_question
@@ -99,16 +106,27 @@ async def handle_quiz_answer(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if text == "/answer":  # model answers the question
         sent_message = await update.message.reply_text("⌛")
-        answer = rag_pipeline(question, current_context)
+        response = rag_pipeline(question, current_context)
 
+        if not response["success"]:
+            await sent_message.edit_text(f"💥 {response['error']}")
+            return State.READY
+
+        answer = response["answer"]
         await sent_message.edit_text(f"💡 Answer:\n{answer}")
         log_tg(update, f"MODEL ANSWER: {answer}")
         return await handle_quiz(update, context)
 
     sent_message = await update.message.reply_text("⌛")
-    evaluation = rate_answer_pipeline(  # user answered the question
+    response = rate_answer_pipeline(  # user answered the question
         context=current_context, question=question, answer=text
     )
+
+    if not response["success"]:
+        await sent_message.edit_text(f"💥 {response['error']}")
+        return State.READY
+
+    evaluation = response["evaluation"]
     log_tg(update, f"USER ANSWER: {text}")
     log_tg(update, f"ANSWER EVALUATION: {evaluation}")
     await sent_message.edit_text(f"👍 {evaluation}")
@@ -120,7 +138,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log_tg(update, f"USER'S QUERY: {query}")
 
     sent_message = await update.message.reply_text("⌛")
-    answer = rag_pipeline(query, None)
+    response = rag_pipeline(query, None)
+
+    if not response["success"]:
+        await sent_message.edit_text(f"💥 {response['error']}")
+        context.user_data["quiz_question"] = None
+        context.user_data["current_context"] = None
+        return State.READY
+
+    answer = response["answer"]
     await sent_message.edit_text(f"💡 Answer:\n{answer}")
     log_tg(update, f"MODEL ANSWER: {answer}")
 
@@ -146,7 +172,6 @@ def run_bot():
         },
         fallbacks=[
             CommandHandler("start", start),
-            # CommandHandler("answer", handle_message),
             CommandHandler("quiz", handle_quiz),
             MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message),
         ],
