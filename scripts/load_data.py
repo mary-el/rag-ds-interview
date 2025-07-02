@@ -5,7 +5,7 @@ from app.embedder import get_embeddings
 from app.faiss_index import add_with_ids, create_faiss_index, save_index, search_index
 from app.logger import setup_logger
 from configs import load_config
-from scripts.doc_parser import parse_documents
+from scripts.doc_parser import parse_document
 
 logger = setup_logger(__name__)
 
@@ -30,7 +30,7 @@ def load_records_to_db_and_faiss() -> bool:
         ]
 
         for doc_path in doc_files:
-            records = parse_documents(doc_path)
+            records = parse_document(doc_path)
             print("Getting Embeddings")
             embeddings = get_embeddings(records["text"].tolist())
             print("Adding data to DB")

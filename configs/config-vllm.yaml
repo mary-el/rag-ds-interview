@@ -16,6 +16,8 @@ doc_parsing:                                      # knowledge base settings
   input_dir: "data/docs"
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
+  chunk_size: 2000
+  chunk_overlap: 100
 
 llm:
   provider: "openai"                              # openai, local

@@ -58,6 +58,11 @@ The project includes a CLI interface and a Telegram bot.
 ---
 
 ## Running
+* Building docker image
+```
+docker-compose up --build
+```
+* Running program
 
 ```bash
 python main.py [-h] [--sync] [--config CONFIG] [--bot]

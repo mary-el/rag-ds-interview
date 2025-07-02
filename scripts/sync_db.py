@@ -13,7 +13,7 @@ from app.database import (
 from app.embedder import get_embeddings
 from app.logger import setup_logger
 from configs import load_config
-from scripts.doc_parser import parse_documents
+from scripts.doc_parser import parse_document
 
 logger = setup_logger(__name__)
 
@@ -38,7 +38,7 @@ def sync_db():
 
     with conn:
         for doc_path in doc_files:  # parsing files
-            df_parsed = parse_documents(doc_path)
+            df_parsed = parse_document(doc_path)
             section = df_parsed["section"][0]
             df_db = get_all_questions(conn, section)  # loading section from db
 
