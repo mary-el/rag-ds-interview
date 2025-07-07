@@ -16,11 +16,12 @@ if __name__ == "__main__":
     )
     parser.add_argument("--bot", "-b", help="run telegram bot", action="store_true")
     args = parser.parse_args()
-    load_config(args.config)  # get config from the file
+    config = load_config(args.config)  # get config from the file
 
     if args.bot:  # start Telegram bot
         from bot.handlers import run_bot
 
+        print(f"Telegram bot: https://t.me/{config['interface']['bot_name']}")
         run_bot()
     else:
         from app.loop import run_loop  # run main loop

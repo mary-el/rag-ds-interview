@@ -12,7 +12,7 @@ faiss:
   dim: 384
   records_num: 3                                   # number of records for RAG to use
 
-doc_parsing:                                      # knowledge base settings
+doc_parsing:                                      #   knowledge base settings
   input_dir: "data/docs"
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
@@ -41,6 +41,8 @@ llm:
 
 interface:
   telegram_token: ${TELEGRAM_TOKEN}
+  bot_name: DS_interview_assistant_bot
+
 
 app:
   log_folder: logs

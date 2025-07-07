@@ -40,6 +40,7 @@ llm:
 
 interface:
   telegram_token: ${TELEGRAM_TOKEN}
+  bot_name: DS_interview_assistant_bot
 
 app:
   log_folder: logs
