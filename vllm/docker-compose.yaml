@@ -21,9 +21,11 @@ services:
         target: /models
     command: >
       --model ${MODEL}
-      --max-model-len 3000
+      --max-model-len ${MAX_MODEL_LEN}
       --download-dir /models
       --gpu-memory-utilization 0.95
-      --quantization awq
+      --quantization bitsandbytes
+      --dtype float16
+      --chat-template llama-2
 volumes:
   models:

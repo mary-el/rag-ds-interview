@@ -26,4 +26,4 @@ if __name__ == "__main__":
     else:
         from app.loop import run_loop  # run main loop
 
-        run_loop()
+        run_loop(synchronize=args.sync)

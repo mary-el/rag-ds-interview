@@ -16,12 +16,13 @@ doc_parsing:                                      #   knowledge base settings
   input_dir: "data/docs"
   files: ['Classical_models.docx', 'Classical_NLP.docx', 'Data.docx', 'Deep_Learning.docx', 'LLM.docx',
          'Metrics.docx', 'Probability_and_Statistics.docx']
-  chunk_size: 2000
+  chunk_size: 1000
   chunk_overlap: 100
 
 llm:
   provider: "openai"                              # openai, local
-  model_name: "/models/Mistral-AWQ"
+#  model_name: "/models/Mistral-AWQ"
+  model_name: "/models/llama-7b"
   api_key: sk-fake-key
   temperature: 0.7
   top_p: 0.95
