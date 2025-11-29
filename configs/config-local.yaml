@@ -10,7 +10,12 @@ faiss:
   distance: "l2"
   model: "sentence-transformers/all-MiniLM-L6-v2"  # faiss embedding model
   dim: 384
-  records_num: 3                                   # number of records for RAG to use
+  records_num: 20                                  # number of candidates to retrieve before reranking (or final number if reranking disabled)
+
+reranker:
+  enabled: true
+  model: "cross-encoder/ms-marco-MiniLM-L6-v2"
+  top_k_candidates: 3  # number of documents to use after reranking
 
 doc_parsing:                                      # knowledge base settings
   input_dir: "data/docs"
